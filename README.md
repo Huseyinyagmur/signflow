@@ -2,6 +2,15 @@
 
 [![CI](https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml)
 
+## Render production hazırlığı
+
+Development/test SQLite, production PostgreSQL kullanır. Native Ruby build komutu
+`bash bin/render-build.sh`, start komutu `bash bin/render-start.sh`, health yolu `/up`.
+Build asset/Tailwind derler; start migration sonrası Puma başlatır. Gerekli gizli değişkenler:
+`DATABASE_URL`, `RAILS_MASTER_KEY`. Plan seçimi, environment, manuel deploy, migration ve
+sorun giderme adımları: [Render rehberi](docs/RENDER_DEPLOYMENT.md).
+Render kaynağı oluşturulmadı ve deploy yapılmadı; otomatik kaynak oluşturan render.yaml yoktur.
+
 Ruby 3.4.11 / Rails 8.1.4, SQLite, ERB, Hotwire ve Tailwind CSS ile geliştirilmiş üniversite projesi. Kullanıcı kayıt olur, giriş yapar, sözleşme taslağı oluşturur, imzalama bağlantısını paylaşır ve alıcının demo imzasını takip eder. Hukuken nitelikli elektronik imza veya doğrulanmış kimlik iddiasında bulunmaz.
 
 ## Yerel çalıştırma (Windows PowerShell)

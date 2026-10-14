@@ -8,6 +8,11 @@ Rails.application.configure do
 
   # Eager load code on boot for better performance and memory savings (ignored by Rake tasks).
   config.eager_load = true
+  # Asset builds use a command-scoped dummy key; runtime must have real credentials.
+  config.require_master_key = ENV["SECRET_KEY_BASE_DUMMY"] != "1"
+  if !ENV["DATABASE_URL"].to_s.match?(/\Apostgres(?:ql)?:\/\//) && ENV["SECRET_KEY_BASE_DUMMY"] != "1"
+    raise "DATABASE_URL must point to the production PostgreSQL database"
+  end
 
   # Full error reports are disabled.
   config.consider_all_requests_local = false
@@ -25,13 +30,13 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  # config.assume_ssl = true
+  config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
 
   # Skip http-to-https redirect for the default health check endpoint.
-  # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+  config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
   # Log to STDOUT with the current request id as a default log tag.
   config.log_tags = [ :request_id ]
@@ -46,19 +51,25 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Replace the default in-process memory cache store with a durable alternative.
-  config.cache_store = :solid_cache_store
+  # The current demo has no durable cache or background jobs; persist domain data in PostgreSQL.
+  config.cache_store = :memory_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  config.active_job.queue_adapter = :async
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  allowed_hosts = [ ENV["APP_HOST"], ENV["RENDER_EXTERNAL_HOSTNAME"] ].compact.map(&:strip).reject(&:empty?).uniq
+  if allowed_hosts.empty? && ENV["SECRET_KEY_BASE_DUMMY"] != "1"
+    raise "Set APP_HOST or RENDER_EXTERNAL_HOSTNAME to the exact public hostname"
+  end
+  if allowed_hosts.any? { |host| !host.match?(/\A[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?\z/i) }
+    raise "Production hosts must be bare hostnames, without a scheme, port or path"
+  end
+  config.action_mailer.default_url_options = { host: allowed_hosts.first, protocol: "https" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
@@ -80,11 +91,8 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
+  config.hosts = allowed_hosts
   #
   # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end

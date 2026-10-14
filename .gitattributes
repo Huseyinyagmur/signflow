@@ -1,0 +1,2 @@
+# Native Render commands run via bash; preserve LF when editing on Windows.
+bin/render-*.sh text eol=lf

@@ -62,6 +62,20 @@ bundle exec rubocop
 - İsteğe bağlı yerel CI benzetiminde PowerShell için $env:CI="true" ve $env:RAILS_ENV="test" kullanın; iş bitince önceki ortam değerlerini geri yükleyin. rails zeitwerk tanımlı değildir; gerçek kontrol zeitwerk:check'tir.
 - Kullanıcı istemedikçe commit, push, workflow_dispatch, merge veya deploy yapmayın. Projede test/system bulunmadığından tarayıcı testi sonucu iddia etmeyin.
 
+## Render production hazırlığı
+
+- Kurulum: [docs/RENDER_DEPLOYMENT.md](docs/RENDER_DEPLOYMENT.md). Yalnızca hazırlık yetkilendirildi; Render hesabında işlem/kaynak oluşturma, deploy, commit veya push yapmayın.
+- Dev/test SQLite kalır; production DATABASE_URL üzerinden PostgreSQL kullanır. SQLite verilerini silmeyin/dönüştürmeyin. Production db/schema.rb dump edilmez.
+- Native Ruby 3.4.11; build: bash bin/render-build.sh; start: bash bin/render-start.sh; health: /up. Pre-deploy varsayılmaz. Build assets derler; start db:migrate sonrası exec Puma çalıştırır. Seed/reset/drop/schema:load eklemeyin.
+- Secrets yalnızca Environment: DATABASE_URL, RAILS_MASTER_KEY. RAILS_ENV, RUBY_VERSION, BUNDLE_WITHOUT, WEB_CONCURRENCY, RAILS_MAX_THREADS, RAILS_LOG_TO_STDOUT rehberde açıklanır; APP_HOST, PGSSLMODE, RAILS_LOG_LEVEL isteğe bağlıdır. Render PORT ve RENDER_EXTERNAL_HOSTNAME sağlar. SECRET_KEY_BASE_DUMMY runtime'a taşınmaz.
+- HTTPS/assume_ssl/force_ssl, Secure cookie, same-origin, CSRF/origin ve host listesi korunur. PGSSLMODE production'da require kalır; disable yalnızca ayrı local loopback cluster'ında kullanılabilir.
+- Production memory cache, async ActiveJob/ActionCable kullanır. Solid adaptörleri/bin/jobs açılmamalı; kalıcı job veya çok instance ayrıca tasarlanır. Domain kayıtları PostgreSQL'dedir.
+- render.yaml yoktur. Ücretli plan/fiyat kullanıcı tarafından oluşturma sırasında onaylanır. Ücretsiz 30 günlük PostgreSQL kalıcı hedef değildir. Mevcut Docker/Kamal iskeleti native Render yolu değildir.
+- bin/render-*.sh LF satır sonlarını .gitattributes ile koruyun. Windows ruby.exe shebang'li binstub'ları Linux'ta doğrudan çalıştırmayın.
+- Kontroller: bundle exec rails test; bundle exec rubocop; bundle exec rails zeitwerk:check; bundle exec rails tailwindcss:build. Eksik zeitwerk/tailwindcss komutlarını başarılı raporlamayın.
+- script/check_render_production.rb yalnızca ayrı loopback *_production_check PostgreSQL DB'sinde production runner ile çalışır; deneme kayıtları ekler. Canlı DB'de çalıştırmayın. Komut/ortam ayrıntıları rehberdedir.
+- /up yalnızca boot sağlığıdır. Gerçek browser/JS/TLS, restart sonrası kalıcılık ve backup geri yükleme deploy sonrası ayrıca doğrulanır. Yerel başarı uzaktaki başarı değildir. Migration rollback otomatik yapılmaz; backup ve eski/yeni sürüm uyumluluğu değerlendirilir.
+
 ## Yapılmaması gerekenler
 
 - Mevcut Rails projesini silmeyin, yeniden üretmeyin veya kullanıcı dosyalarının üzerine topluca yazmayın.
