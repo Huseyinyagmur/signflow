@@ -1,5 +1,7 @@
 # SignFlow
 
+[![CI](https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml)
+
 Ruby 3.4.11 / Rails 8.1.4, SQLite, ERB, Hotwire ve Tailwind CSS ile geliştirilmiş üniversite projesi. Kullanıcı kayıt olur, giriş yapar, sözleşme taslağı oluşturur, imzalama bağlantısını paylaşır ve alıcının demo imzasını takip eder. Hukuken nitelikli elektronik imza veya doğrulanmış kimlik iddiasında bulunmaz.
 
 ## Yerel çalıştırma (Windows PowerShell)
@@ -31,6 +33,10 @@ CSS kaynaklarını değiştirirken ayrı PowerShell penceresinde `bundle exec ra
 9. Aynı bağlantıyı yeniden açmak reddedilir. Son tarihi geçmiş pending belgeler de imzalanamaz.
 
 ## Kontroller
+
+GitHub Actions CI, main dalına push ve main hedefli pull request olaylarında çalışır. Ubuntu 24.04 üzerinde Ruby 3.4.11, Gemfile.lock'taki Bundler sürümü ve ruby/setup-ruby Bundler cache kullanılır. SQLite test veritabanı hazırlanır; Minitest, Zeitwerk, RuboCop ve mevcut güvenlik taramaları çalıştırılır. Başarısız komutun hatası gizlenmez; ilgili CI işi başarısız olur. Testler izole test ortamında çalışır; geliştirme veritabanı kullanılmaz.
+
+[Actions → CI](https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml) sayfasından ilgili commit/PR çalışmasını açıp scan_ruby, scan_js, lint ve test işlerinin loglarını kontrol edin. Rozet main üzerindeki push çalışmasının durumunu gösterir. Yerel kontrollerin başarılı olması uzaktaki Actions çalışmasının başarılı olduğu anlamına gelmez. Workflow ancak siz değişiklikleri GitHub'a gönderdiğinizde çalışır; bu kurulum otomatik commit/push yapmaz. Projede test/system bulunmadığı için tarayıcı sistem testi işi yoktur.
 
 ```powershell
 bundle exec rails db:prepare RAILS_ENV=test

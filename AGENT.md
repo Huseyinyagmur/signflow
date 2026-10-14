@@ -53,6 +53,15 @@ bundle exec rails documents:expire
 bundle exec rubocop
 ```
 
+## GitHub Actions CI
+
+- .github/workflows/ci.yml main push ve main hedefli pull_request olaylarında çalışır. Ubuntu 24.04, ruby/setup-ruby@v1, Ruby 3.4.11 ve bundler-cache kullanılır. Gemfile.lock Windows ve x86_64-linux platformlarını içerir; CI sırasında bundle update veya lockfile yeniden üretme kullanmayın.
+- Workflow RAILS_ENV=test ile SQLite test veritabanını hazırlar. Native bağımlılıklar: build-essential, pkg-config, libsqlite3-dev, sqlite3, libvips-dev. CI komutları: bundle exec rails db:prepare; bundle exec rails zeitwerk:check; bundle exec rails test; bundle exec rubocop -f github.
+- Mevcut Brakeman, Bundler Audit ve Importmap audit işleri korunur. Windows binstub'larındaki ruby.exe shebang'ini Linux'ta doğrudan çalıştırmayın; gerekli wrapper'ları bundle exec ruby bin/... ile çağırın.
+- Test veya kontrol hatalarını continue-on-error, || true veya exit 0 ile gizlemeyin. Uzaktaki CI sonucunu yerel testten tahmin etmeyin. Actions run ve commit bilgisini doğrulamadan uzaktaki işi başarılı raporlamayın.
+- İsteğe bağlı yerel CI benzetiminde PowerShell için $env:CI="true" ve $env:RAILS_ENV="test" kullanın; iş bitince önceki ortam değerlerini geri yükleyin. rails zeitwerk tanımlı değildir; gerçek kontrol zeitwerk:check'tir.
+- Kullanıcı istemedikçe commit, push, workflow_dispatch, merge veya deploy yapmayın. Projede test/system bulunmadığından tarayıcı testi sonucu iddia etmeyin.
+
 ## Yapılmaması gerekenler
 
 - Mevcut Rails projesini silmeyin, yeniden üretmeyin veya kullanıcı dosyalarının üzerine topluca yazmayın.
