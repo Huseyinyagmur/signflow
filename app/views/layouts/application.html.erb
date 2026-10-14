@@ -15,7 +15,7 @@
 <% workspace = current_user && %w[dashboard documents templates template_documents].include?(controller_name) %>
 <% if workspace %>
   <aside class="workspace-sidebar">
-    <%= link_to root_path, class: "brand" do %><span class="brand-mark">S<small>↗</small></span>SignFlow<% end %>
+    <%= link_to brand_destination_path, class: "brand" do %><span class="brand-mark">S<small>↗</small></span>SignFlow<% end %>
     <p class="eyebrow mt-12 mb-4 hidden lg:block">ÇALIŞMA ALANI</p>
     <nav class="mt-5 flex flex-wrap gap-2 lg:mt-0 lg:flex-col" aria-label="Ana menü">
       <%= link_to dashboard_path, class: "nav-link #{'active' if controller_name == 'dashboard'}" do %><%= sf_icon("grid") %> Genel bakış<% end %>
@@ -32,7 +32,7 @@
     <header class="workspace-topbar"><span class="text-sm text-slate-500">Çalışma alanım <span class="mx-2 text-slate-300">/</span> <span class="text-slate-800"><%= controller_name == 'dashboard' ? 'Genel bakış' : (%w[templates template_documents].include?(controller_name) ? 'Şablonlar' : 'Sözleşmeler') %></span></span><span class="badge badge-draft">Demo sürümü</span></header>
 <% else %>
   <header class="public-header">
-    <%= link_to root_path, class: "brand" do %><span class="brand-mark">S<small>↗</small></span>SignFlow<% end %>
+    <%= link_to brand_destination_path, class: "brand" do %><span class="brand-mark">S<small>↗</small></span>SignFlow<% end %>
     <nav class="flex items-center gap-2" aria-label="Üst menü">
       <% if current_user %><%= link_to "Çalışma alanım", dashboard_path, class: "btn btn-primary" %>
       <% else %><%= link_to "Giriş yap", new_session_path, class: "btn btn-plain" %><%= link_to "Hesap oluştur", new_registration_path, class: "btn btn-primary" %><% end %>

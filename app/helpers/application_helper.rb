@@ -1,4 +1,8 @@
 module ApplicationHelper
+  def brand_destination_path
+    current_user ? dashboard_path : root_path
+  end
+
   def status_label(status)
     { "draft" => "Taslak", "pending" => "İmza bekliyor", "signed" => "İmzalandı", "expired" => "Süresi doldu" }.fetch(status)
   end

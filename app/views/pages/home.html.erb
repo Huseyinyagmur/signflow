@@ -3,7 +3,14 @@
   <span class="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-xs font-semibold text-teal-800"><span class="h-2 w-2 rounded-full bg-teal-600"></span> Daha akıcı bir sözleşme deneyimi</span>
   <h1 class="mt-7 text-5xl font-semibold leading-[1.12] tracking-tight text-slate-900 md:text-6xl">Sözleşmeden imzaya.<br><span class="text-teal-800">Tek bir akışta.</span></h1>
   <p class="mt-6 max-w-lg text-lg leading-8 text-slate-500">Sözleşmenizi oluşturun, bağlantısını paylaşın ve imza durumunu takip edin. Tüm süreç, düzenli bir çalışma alanında.</p>
-  <div class="mt-8 flex flex-wrap gap-3"><%= link_to new_registration_path, class: "btn btn-primary" do %>Ücretsiz başlayın <%= sf_icon("arrow") %><% end %><%= link_to "Hesabınıza giriş yapın", new_session_path, class: "btn btn-secondary" %></div>
+  <div class="mt-8 flex flex-wrap gap-3">
+    <% if current_user %>
+      <%= link_to dashboard_path, class: "btn btn-primary" do %>Çalışma alanına dön <%= sf_icon("arrow") %><% end %>
+    <% else %>
+      <%= link_to new_registration_path, class: "btn btn-primary" do %>Ücretsiz başlayın <%= sf_icon("arrow") %><% end %>
+      <%= link_to "Hesabınıza giriş yapın", new_session_path, class: "btn btn-secondary" %>
+    <% end %>
+  </div>
   <p class="mt-5 text-xs text-slate-500">Üniversite projesi · Ücret veya kredi kartı gerekmez</p>
 </div>
 <div class="relative rounded-[2rem] border border-teal-100 bg-[#eaf3ef] p-6 md:p-10">
