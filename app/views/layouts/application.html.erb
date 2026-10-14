@@ -12,7 +12,7 @@
 </head>
 <body>
 <a class="sr-only focus:not-sr-only focus:p-4" href="#main">İçeriğe geç</a>
-<% workspace = current_user && %w[dashboard documents].include?(controller_name) %>
+<% workspace = current_user && %w[dashboard documents templates template_documents].include?(controller_name) %>
 <% if workspace %>
   <aside class="workspace-sidebar">
     <%= link_to root_path, class: "brand" do %><span class="brand-mark">S<small>↗</small></span>SignFlow<% end %>
@@ -20,6 +20,7 @@
     <nav class="mt-5 flex flex-wrap gap-2 lg:mt-0 lg:flex-col" aria-label="Ana menü">
       <%= link_to dashboard_path, class: "nav-link #{'active' if controller_name == 'dashboard'}" do %><%= sf_icon("grid") %> Genel bakış<% end %>
       <%= link_to documents_path, class: "nav-link #{'active' if controller_name == 'documents'}" do %><%= sf_icon("file") %> Sözleşmelerim<% end %>
+      <%= link_to templates_path, class: "nav-link #{'active' if %w[templates template_documents].include?(controller_name)}" do %><%= sf_icon("grid") %> Şablonlarım<% end %>
       <%= link_to new_document_path, class: "nav-link" do %><%= sf_icon("plus") %> Yeni sözleşme<% end %>
     </nav>
     <div class="mt-auto pt-8 lg:pt-12">
@@ -28,7 +29,7 @@
     </div>
   </aside>
   <div class="workspace-main">
-    <header class="workspace-topbar"><span class="text-sm text-slate-500">Çalışma alanım <span class="mx-2 text-slate-300">/</span> <span class="text-slate-800"><%= controller_name == 'dashboard' ? 'Genel bakış' : 'Sözleşmeler' %></span></span><span class="badge badge-draft">Demo sürümü</span></header>
+    <header class="workspace-topbar"><span class="text-sm text-slate-500">Çalışma alanım <span class="mx-2 text-slate-300">/</span> <span class="text-slate-800"><%= controller_name == 'dashboard' ? 'Genel bakış' : (%w[templates template_documents].include?(controller_name) ? 'Şablonlar' : 'Sözleşmeler') %></span></span><span class="badge badge-draft">Demo sürümü</span></header>
 <% else %>
   <header class="public-header">
     <%= link_to root_path, class: "brand" do %><span class="brand-mark">S<small>↗</small></span>SignFlow<% end %>

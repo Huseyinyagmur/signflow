@@ -1,0 +1,3 @@
+<% content_for :title, "Şablonu düzenle" %>
+<div class="page-heading"><div><%= link_to "← Şablon detayları", template_path(@template), class: "mb-4 inline-block text-sm text-slate-500" %><h1>Şablonu düzenle</h1><p>Kaydettiğinizde yeni bir sürüm oluşur. Eski sözleşmeler aynı kalır.</p></div><span class="badge badge-draft">Son sürüm · v<%= @template.current_version.number %></span></div>
+<%= render "form" %>

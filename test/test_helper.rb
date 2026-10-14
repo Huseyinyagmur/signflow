@@ -21,6 +21,10 @@ module ActiveSupport
         expires_at: 1.day.from_now)
     end
 
+    def create_template(user: create_user, content: "{{alici_adi}} için {{hizmet}}. Ücret: {{ucret}}.")
+      Templates::Manage.new(user: user).create!({ title: "Hizmet şablonu", description: "Ders demosu", content: content })
+    end
+
     # Add more helper methods to be used by all tests here...
   end
 end

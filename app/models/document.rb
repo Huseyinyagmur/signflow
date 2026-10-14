@@ -9,6 +9,7 @@ class Document < ApplicationRecord
   SEALED_FIELDS = %w[title content recipient_name recipient_email expires_at user_id].freeze
 
   belongs_to :user
+  belongs_to :template_version, optional: true
   enum :status, STATUSES.index_with(&:itself), default: :draft, validate: true
   normalizes :recipient_email, with: ->(email) { email.strip.downcase }
 
@@ -20,6 +21,7 @@ class Document < ApplicationRecord
   validates :signer_name, presence: true, length: { maximum: 120 }, if: :signed?
   validate :protect_lifecycle
   validate :protect_sent_document
+  validate :protect_template_source
 
   def send_for_signature!
     token = SecureRandom.urlsafe_base64(32)
@@ -59,6 +61,15 @@ class Document < ApplicationRecord
   end
 
   private
+
+  def protect_template_source
+    if template_version && template_version.template.user_id != user_id
+      errors.add(:template_version, "belge sahibiyle aynı kullanıcıya ait olmalıdır")
+    end
+    if persisted? && will_save_change_to_template_version_id?
+      errors.add(:template_version, "belge oluşturulduktan sonra değiştirilemez")
+    end
+  end
 
   def transition!(attributes)
     @transitioning = true

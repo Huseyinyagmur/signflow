@@ -6,6 +6,13 @@ Rails.application.routes.draw do
   resources :documents, except: :destroy do
     post :send_for_signature, on: :member
   end
+  resources :templates, except: :destroy do
+    post :add_examples, on: :collection
+    get :history, on: :member
+    resources :documents, only: %i[new create], controller: "template_documents" do
+      post :preview, on: :collection
+    end
+  end
   get "sign", to: "signing#show", as: :signing
   post "sign/access", to: "signing#access", as: :signing_access
   post "sign", to: "signing#create"
