@@ -1,0 +1,15 @@
+<%= form_with model: @document do |form| %>
+<%= render "shared/errors", record: @document %>
+<div class="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+<section class="panel"><div class="panel-heading"><h2 class="flex items-center gap-2 font-semibold"><%= sf_icon("file") %> Sözleşme içeriği</h2><span class="text-xs text-slate-400">01 / Belge</span></div><div class="p-6">
+<div class="field-group"><%= form.label :title, "Sözleşme başlığı" %><%= form.text_field :title, required: true, placeholder: "Örn. Danışmanlık hizmet sözleşmesi" %></div>
+<div><%= form.label :content, "Sözleşme metni" %><%= form.text_area :content, required: true, rows: 16, placeholder: "Taraflar, kapsam ve koşulları buraya yazın…" %><p class="hint">Metin düz yazı olarak saklanır ve görüntülenir.</p></div>
+</div></section>
+<div class="space-y-6"><section class="panel"><div class="panel-heading"><h2 class="font-semibold">Alıcı ve son tarih</h2></div><div class="p-6">
+<div class="field-group"><%= form.label :recipient_name, "Alıcının adı soyadı" %><%= form.text_field :recipient_name, autocomplete: "off", placeholder: "Örn. Deniz Yılmaz" %></div>
+<div class="field-group"><%= form.label :recipient_email, "Alıcının e-postası" %><%= form.email_field :recipient_email, placeholder: "alici@ornek.com" %></div>
+<div><%= form.label :expires_at, "Son imzalama tarihi" %><%= form.datetime_local_field :expires_at, step: 60 %><p class="hint">Türkiye saati (UTC+3). Bu andan itibaren imzalama kapanır.</p></div>
+</div></section><div class="rounded-2xl border border-teal-100 bg-teal-50 p-5 text-sm leading-6 text-teal-900"><p class="font-semibold">Önce taslak, sonra paylaşım.</p><p class="mt-2">Alıcı ve son tarih bilgilerini sonra da ekleyebilirsiniz. İmzaya gönderilen sözleşmeler değiştirilemez.</p></div>
+<%= form.submit "Taslağı kaydet", class: "btn btn-primary w-full" %><%= link_to "Vazgeç", @document.persisted? ? document_path(@document) : documents_path, class: "btn btn-plain w-full" %></div>
+</div>
+<% end %>

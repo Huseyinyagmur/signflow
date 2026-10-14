@@ -1,0 +1,3 @@
+<% if record.errors.any? %>
+<div class="notice notice-error" role="alert"><p class="font-semibold">Lütfen bilgileri kontrol edin.</p><ul class="mt-2 list-disc space-y-1 pl-5"><% record.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul></div>
+<% end %>

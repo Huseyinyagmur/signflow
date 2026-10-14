@@ -1,0 +1,3 @@
+<% content_for :title, "Taslağı düzenle" %>
+<div class="page-heading"><div><%= link_to "← Sözleşme detayları", document_path(@document), class: "mb-4 inline-block text-sm text-slate-500" %><h1>Taslağı düzenle</h1><p>Göndermeden önce sözleşmenize son hâlini verin.</p></div><%= status_badge(@document) %></div>
+<%= render "form" %>

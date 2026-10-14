@@ -1,0 +1,10 @@
+<% content_for :title, "Giriş yap" %>
+<div class="mx-auto max-w-md py-12 md:py-20">
+<div class="mb-8 text-center"><span class="mb-5 inline-flex rounded-2xl bg-teal-50 p-4 text-teal-800"><%= sf_icon("pen", css: "h-7 w-7") %></span><h1 class="text-3xl font-semibold">Tekrar hoş geldiniz.</h1><p class="mt-3 text-sm text-slate-500">Sözleşmelerinize kaldığınız yerden devam edin.</p></div>
+<div class="panel p-7"><%= form_with url: session_path do |form| %>
+  <div class="field-group"><%= form.label :email, "E-posta adresi" %><%= form.email_field :email, required: true, autocomplete: "username", autofocus: true, placeholder: "siz@ornek.com", value: params[:email] %></div>
+  <div class="field-group"><%= form.label :password, "Parola" %><%= form.password_field :password, required: true, autocomplete: "current-password" %></div>
+  <%= form.submit "Giriş yap", class: "btn btn-primary w-full" %>
+<% end %></div>
+<p class="mt-6 text-center text-sm text-slate-500">Henüz hesabınız yok mu? <%= link_to "Hesap oluşturun", new_registration_path, class: "font-semibold text-teal-800" %></p>
+</div>

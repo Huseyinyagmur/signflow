@@ -1,0 +1,3 @@
+<% content_for :title, "Sözleşmelerim" %>
+<div class="page-heading"><div><h1>Sözleşmelerim</h1><p>Taslaklarınızdan tamamlanan imzalara, tüm belgeleriniz burada.</p></div><%= link_to new_document_path, class: "btn btn-primary" do %><%= sf_icon("plus") %> Yeni sözleşme<% end %></div>
+<div class="panel"><nav class="flex flex-wrap gap-2 border-b border-slate-100 p-4" aria-label="Durum filtreleri"><%= link_to "Tümü", documents_path, class: "btn #{params[:status].blank? ? 'btn-primary' : 'btn-plain'}" %><% Document::STATUSES.each do |status| %><%= link_to status_label(status), documents_path(status: status), class: "btn #{params[:status] == status ? 'btn-primary' : 'btn-plain'}" %><% end %></nav><%= render "table", documents: @documents %></div>

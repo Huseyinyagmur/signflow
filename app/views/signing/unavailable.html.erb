@@ -1,0 +1,3 @@
+<% content_for :title, "Bağlantı kullanılamıyor" %>
+<%= render "access" %>
+<div class="mx-auto max-w-lg py-20 text-center"><span class="mb-6 inline-flex rounded-2xl bg-rose-50 p-5 text-rose-700"><%= sf_icon("clock", css: "h-8 w-8") %></span><h1 class="text-3xl font-semibold">Bu bağlantı kullanılamıyor.</h1><p class="mt-4 text-sm leading-7 text-slate-500">Bağlantı geçersiz olabilir, sözleşme daha önce imzalanmış olabilir veya son imza tarihi geçmiş olabilir. Lütfen sözleşme sahibiyle iletişime geçin.</p><%= link_to "Ana sayfaya dön", root_path, class: "btn btn-secondary mt-8" %></div>

@@ -1,0 +1,9 @@
+<% content_for :title, "Genel bakış" %>
+<div class="page-heading"><div><p class="eyebrow mb-3">HER ŞEY KONTROLÜNÜZ ALTINDA</p><h1>Merhaba, <%= current_user.name.split.first %> <span class="text-teal-700">↗</span></h1><p>Sözleşmelerinizin bugünkü görünümü. Bir sonraki adımı birlikte atalım.</p></div><%= link_to new_document_path, class: "btn btn-primary" do %><%= sf_icon("plus") %> Yeni sözleşme<% end %></div>
+<div class="mb-8 grid grid-cols-2 gap-4 xl:grid-cols-4">
+<% [["draft", "file", "Taslaklar", "Hazırlanmaya devam eden"], ["pending", "clock", "İmza bekleyen", "Alıcının onayını bekleyen"], ["signed", "check", "İmzalanan", "Başarıyla tamamlanan"], ["expired", "clock", "Süresi dolan", "İmza tarihi geçen"]].each do |status, icon, title, subtitle| %>
+<div class="stat-card"><div class="flex items-center justify-between"><span class="text-sm font-medium text-slate-500"><%= title %></span><span class="rounded-lg bg-slate-50 p-2 text-teal-700"><%= sf_icon(icon) %></span></div><p class="mt-4 text-3xl font-semibold"><%= @counts.fetch(status, 0) %></p><p class="hint"><%= subtitle %></p></div>
+<% end %>
+</div>
+<div class="mb-8 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-teal-100 bg-[#eaf3ef] p-6"><div><h2 class="text-lg font-semibold text-teal-950">Bir sözleşme. Üç kolay adım.</h2><p class="mt-2 text-sm leading-6 text-teal-800">Taslağınızı hazırlayın, bağlantıyı paylaşın, demo imzayı takip edin.</p></div><span class="rounded-xl bg-white/70 p-4 text-teal-700"><%= sf_icon("pen", css: "h-7 w-7") %></span></div>
+<section class="panel"><div class="panel-heading"><h2 class="font-semibold">Son sözleşmeler</h2><%= link_to "Tümünü görüntüle →", documents_path, class: "text-sm font-semibold text-teal-800" %></div><%= render "documents/table", documents: @documents %></section>

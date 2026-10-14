@@ -1,0 +1,18 @@
+<% content_for :title, "Sözleşmeyi imzala" %>
+<%= render "access" %>
+<% if @document %>
+<div class="mx-auto max-w-5xl py-8 md:py-12"><div class="mb-8"><p class="eyebrow mb-3">SİZE ÖZEL İMZALAMA DAVETİ</p><h1 class="break-words text-3xl font-semibold"><%= @document.title %></h1><p class="mt-3 text-sm leading-6 text-slate-500"><%= @document.recipient_name %>, sözleşmeyi inceleyip aşağıdan demo imzanızı tamamlayabilirsiniz.</p></div>
+<div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+<section class="panel"><div class="panel-heading"><h2 class="font-semibold">Sözleşme metni</h2><%= status_badge(@document) %></div><div class="p-6 md:p-8"><p class="contract-text"><%= @document.content %></p></div></section>
+<section class="panel p-6"><span class="mb-4 inline-flex rounded-xl bg-teal-50 p-3 text-teal-800"><%= sf_icon("pen") %></span><h2 class="text-xl font-semibold">İmzanızı tamamlayın</h2><p class="hint mb-6">Son tarih: <%= display_time(@document.expires_at) %> (Türkiye saati)</p><%= render "shared/errors", record: @acceptance %>
+<%= form_with model: @acceptance, url: signing_path, data: { turbo: false } do |form| %>
+<%= hidden_field_tag :token, @signing_token %>
+<div class="field-group"><%= form.label :signer_name, "Adınız ve soyadınız" %><%= form.text_field :signer_name, required: true, maxlength: 120, autocomplete: "name", placeholder: "İmzanızda görünecek ad" %></div>
+<label class="mb-6 flex cursor-pointer items-start gap-3 text-sm font-normal leading-6"><%= form.check_box :accepted, { required: true, class: "mt-1 h-4 w-4 shrink-0 accent-teal-800" }, "1", "0" %><span>Sözleşme metnini okudum ve koşullarını kabul ediyorum. İşlemin bir demo elektronik imza olduğunu anlıyorum.</span></label>
+<%= form.submit "Kabul et ve demo imzala", class: "btn btn-primary w-full" %>
+<% end %>
+<p class="hint mt-5 border-t border-slate-100 pt-4">Bu işlem kimliğinizi doğrulamaz ve hukuken nitelikli elektronik imza oluşturmaz.</p></section>
+</div></div>
+<% else %>
+<div class="mx-auto max-w-lg py-20 text-center"><span class="mb-6 inline-flex rounded-2xl bg-teal-50 p-5 text-teal-800"><%= sf_icon("shield", css: "h-8 w-8") %></span><h1 class="text-3xl font-semibold">İmzalama bağlantınızla devam edin.</h1><p class="mt-4 text-sm leading-7 text-slate-500">Sözleşme sahibinin paylaştığı bağlantıyı eksiksiz açın. Geçerli bağlantı ile sözleşmeniz burada görüntülenecek.</p><noscript><p class="notice notice-error mt-6">Güvenli bağlantıyı açmak için tarayıcınızda JavaScript'i etkinleştirin.</p></noscript></div>
+<% end %>

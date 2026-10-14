@@ -1,0 +1,4 @@
+<div data-controller="signing-link">
+<%= form_with url: signing_access_path, data: { turbo: false, signing_link_target: "form" }, html: { hidden: true } do |form| %><%= form.hidden_field :token, value: "", data: { signing_link_target: "token" } %><% end %>
+<p class="sr-only" role="status" data-signing-link-target="status"></p>
+</div>
