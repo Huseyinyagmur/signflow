@@ -1,0 +1,249 @@
+{
+  "checked_on": "2026-10-17",
+  "method": "README Markdown link targets; unauthenticated HTTP GET with limited response read; HTTP 403 is access restriction, not proof of broken link",
+  "local": [
+    {
+      "link": "AGENT.md",
+      "exists": true
+    },
+    {
+      "link": "Gemfile",
+      "exists": true
+    },
+    {
+      "link": "app/controllers/concerns/authentication.rb",
+      "exists": true
+    },
+    {
+      "link": "app/controllers/documents_controller.rb",
+      "exists": true
+    },
+    {
+      "link": "app/controllers/registrations_controller.rb",
+      "exists": true
+    },
+    {
+      "link": "app/controllers/sessions_controller.rb",
+      "exists": true
+    },
+    {
+      "link": "app/controllers/signing_controller.rb",
+      "exists": true
+    },
+    {
+      "link": "app/controllers/template_documents_controller.rb",
+      "exists": true
+    },
+    {
+      "link": "app/javascript/controllers/signing_link_controller.js",
+      "exists": true
+    },
+    {
+      "link": "app/models/document.rb",
+      "exists": true
+    },
+    {
+      "link": "app/models/signature_acceptance.rb",
+      "exists": true
+    },
+    {
+      "link": "app/models/template_version.rb",
+      "exists": true
+    },
+    {
+      "link": "app/models/user.rb",
+      "exists": true
+    },
+    {
+      "link": "app/services/documents/expiration.rb",
+      "exists": true
+    },
+    {
+      "link": "app/services/documents/manage.rb",
+      "exists": true
+    },
+    {
+      "link": "app/services/documents/signing.rb",
+      "exists": true
+    },
+    {
+      "link": "app/services/templates/manage.rb",
+      "exists": true
+    },
+    {
+      "link": "app/services/templates/renderer.rb",
+      "exists": true
+    },
+    {
+      "link": "app/views/documents/show.html.erb",
+      "exists": true
+    },
+    {
+      "link": "app/views/signing/complete.html.erb",
+      "exists": true
+    },
+    {
+      "link": "config/database.yml",
+      "exists": true
+    },
+    {
+      "link": "config/initializers/session_store.rb",
+      "exists": true
+    },
+    {
+      "link": "config/recurring.yml",
+      "exists": true
+    },
+    {
+      "link": "config/routes.rb",
+      "exists": true
+    },
+    {
+      "link": "docs/PHASE2_REPORT.md",
+      "exists": true
+    },
+    {
+      "link": "docs/PHASE3_REPORT.md",
+      "exists": true
+    },
+    {
+      "link": "docs/RENDER_DEPLOYMENT.md",
+      "exists": true
+    },
+    {
+      "link": "docs/RESEARCH_MEASUREMENTS.json",
+      "exists": true
+    },
+    {
+      "link": "docs/RESEARCH_VERIFICATION.md",
+      "exists": true
+    },
+    {
+      "link": "docs/SCHEMA_FIX_REPORT.md",
+      "exists": true
+    },
+    {
+      "link": "lib/tasks/documents.rake",
+      "exists": true
+    },
+    {
+      "link": "test/integration/signflow_workflow_test.rb",
+      "exists": true
+    },
+    {
+      "link": "test/integration/template_schema_regression_test.rb",
+      "exists": true
+    },
+    {
+      "link": "test/integration/template_workflow_test.rb",
+      "exists": true
+    },
+    {
+      "link": "test/models/document_test.rb",
+      "exists": true
+    },
+    {
+      "link": "test/services/documents_test.rb",
+      "exists": true
+    },
+    {
+      "link": "test/services/expiration_test.rb",
+      "exists": true
+    }
+  ],
+  "remote": [
+    {
+      "url": "https://corporate.walmart.com/news/2026/04/23/walmart-releases-2026-annual-report-and-proxy-statement",
+      "status": 200,
+      "final_url": "https://corporate.walmart.com/news/2026/04/23/walmart-releases-2026-annual-report-and-proxy-statement"
+    },
+    {
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.4",
+      "status": 200,
+      "final_url": "https://developers.openai.com/api/docs/models/gpt-5.4"
+    },
+    {
+      "url": "https://fortune.com/company/a-mark-precious-metals/",
+      "status": 200,
+      "final_url": "https://fortune.com/company/a-mark-precious-metals/"
+    },
+    {
+      "url": "https://fortune.com/company/bitgo-holdings/",
+      "status": 200,
+      "final_url": "https://fortune.com/company/bitgo-holdings/"
+    },
+    {
+      "url": "https://fortune.com/company/comcast/",
+      "status": 200,
+      "final_url": "https://fortune.com/company/comcast/"
+    },
+    {
+      "url": "https://fortune.com/company/nvidia/",
+      "status": 200,
+      "final_url": "https://fortune.com/company/nvidia/"
+    },
+    {
+      "url": "https://fortune.com/company/t-mobile/",
+      "status": 200,
+      "final_url": "https://fortune.com/company/t-mobile/"
+    },
+    {
+      "url": "https://fortune.com/ranking/fortune500/",
+      "status": 200,
+      "final_url": "https://fortune.com/ranking/fortune500/"
+    },
+    {
+      "url": "https://fortunemedia.mediaroom.com/2026-06-03-Amazon-Claims-No-1-Spot-on-the-Fortune-500",
+      "status": 403
+    },
+    {
+      "url": "https://github.com/Huseyinyagmur/signflow",
+      "status": 200,
+      "final_url": "https://github.com/Huseyinyagmur/signflow"
+    },
+    {
+      "url": "https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml",
+      "status": 200,
+      "final_url": "https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml"
+    },
+    {
+      "url": "https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml/badge.svg?branch=main&event=push",
+      "status": 200,
+      "final_url": "https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml/badge.svg?branch=main&event=push"
+    },
+    {
+      "url": "https://render.com/docs/free",
+      "status": 200,
+      "final_url": "https://render.com/docs/free"
+    },
+    {
+      "url": "https://signflow-k2tg.onrender.com/",
+      "status": 200,
+      "final_url": "https://signflow-k2tg.onrender.com/"
+    },
+    {
+      "url": "https://www.capterra.com/p/121506/Docusign/reviews/",
+      "status": 403
+    },
+    {
+      "url": "https://www.docusign.com/sites/default/files/resource_event_files/personalized_sales_agreements_for_more_efficient_sales_cycles.pdf",
+      "status": 200,
+      "final_url": "https://www.docusign.com/sites/default/files/resource_event_files/personalized_sales_agreements_for_more_efficient_sales_cycles.pdf"
+    },
+    {
+      "url": "https://www.docusign.com/why-docusign",
+      "status": 200,
+      "final_url": "https://www.docusign.com/why-docusign"
+    },
+    {
+      "url": "https://zylo.com/2026-saas-management-index",
+      "status": 200,
+      "final_url": "https://zylo.com/2026-saas-management-index"
+    },
+    {
+      "url": "https://zylo.com/blog/saas-statistics",
+      "status": 200,
+      "final_url": "https://zylo.com/blog/saas-statistics"
+    }
+  ]
+}

@@ -1,0 +1,994 @@
+{
+  "measured_on": "2026-10-17",
+  "base_commit": "0d203138063552e4cf3be6c60ade4850dc6397fb",
+  "method": "git ls-files; UTF-8 splitlines; physical and nonempty lines, comments included; current working tree bytes",
+  "included_extensions": [
+    ".css",
+    ".erb",
+    ".js",
+    ".json",
+    ".rake",
+    ".rb",
+    ".ru",
+    ".sh",
+    ".yaml",
+    ".yml"
+  ],
+  "special_names": [
+    "Gemfile",
+    "Rakefile",
+    "Dockerfile",
+    "bin/*"
+  ],
+  "excluded": "docs/README/AGENT, vendor/public, app/assets/builds, binaries, locks, installed gems, tmp/log/storage/.git; generated db schemas counted separately",
+  "groups": {
+    "application": {
+      "files": 62,
+      "physical_lines": 1177,
+      "nonblank_lines": 1045
+    },
+    "tests": {
+      "files": 15,
+      "physical_lines": 1463,
+      "nonblank_lines": 1337
+    },
+    "infrastructure": {
+      "files": 54,
+      "physical_lines": 1431,
+      "nonblank_lines": 1188
+    },
+    "generated_schema": {
+      "files": 4,
+      "physical_lines": 255,
+      "nonblank_lines": 237
+    }
+  },
+  "Gemfile_lock_physical_lines": 400,
+  "files": [
+    {
+      "path": ".github/dependabot.yml",
+      "category": "infrastructure",
+      "physical_lines": 12,
+      "nonblank_lines": 12,
+      "sha256": "4a6698dbb7e88418562c06e57b9881d554487ace4060be19d3e7d20a5646a47f"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "category": "infrastructure",
+      "physical_lines": 108,
+      "nonblank_lines": 85,
+      "sha256": "7f15d0164ca2eb31fdccbbb84ae5a5c7e932beb10ff6b85f6e7d8f2ee6ced236"
+    },
+    {
+      "path": "Dockerfile",
+      "category": "infrastructure",
+      "physical_lines": 82,
+      "nonblank_lines": 60,
+      "sha256": "250024e750c80e595a0669ce4033aa4ab3693bc2ee6bb8e0807c03005b580d9f"
+    },
+    {
+      "path": "Gemfile",
+      "category": "infrastructure",
+      "physical_lines": 70,
+      "nonblank_lines": 56,
+      "sha256": "ef2818cf59f0712630a7b8e7da548bdca7d9d086268a1efd9b90585f0d36825a"
+    },
+    {
+      "path": "Rakefile",
+      "category": "infrastructure",
+      "physical_lines": 6,
+      "nonblank_lines": 4,
+      "sha256": "895c6a69d01c14f0dd437c0eb44914754006ce317807264ca7ffbd1c79a91ebf"
+    },
+    {
+      "path": "app/assets/stylesheets/application.css",
+      "category": "application",
+      "physical_lines": 10,
+      "nonblank_lines": 10,
+      "sha256": "478b66b3effc220e394a0ba1a9065c367d723bd73b2036067ea87f91094b2cdf"
+    },
+    {
+      "path": "app/assets/tailwind/application.css",
+      "category": "application",
+      "physical_lines": 49,
+      "nonblank_lines": 48,
+      "sha256": "9f65cf13f747a226f7f1956f2c4fec0d665610be9806045e787a60473f3a6611"
+    },
+    {
+      "path": "app/controllers/application_controller.rb",
+      "category": "application",
+      "physical_lines": 8,
+      "nonblank_lines": 7,
+      "sha256": "9cd787143a891e7a7ada1885c2e486ab22f59aae16f598b146ec4c27fcbdd2c6"
+    },
+    {
+      "path": "app/controllers/concerns/authentication.rb",
+      "category": "application",
+      "physical_lines": 28,
+      "nonblank_lines": 22,
+      "sha256": "54cf848d451583d946bbf3d2effac5c72df1acb9db1fa1fbdacbca8f42259ac0"
+    },
+    {
+      "path": "app/controllers/dashboard_controller.rb",
+      "category": "application",
+      "physical_lines": 7,
+      "nonblank_lines": 7,
+      "sha256": "05435c3a1ede99096fdb1e30b358f9e1f000c1d3ec4373c217fba8e3608ac15f"
+    },
+    {
+      "path": "app/controllers/documents_controller.rb",
+      "category": "application",
+      "physical_lines": 62,
+      "nonblank_lines": 51,
+      "sha256": "511754932d2bebbe2deb1fbd02ed3c0df854841a71bae93236dce0e1586fd10a"
+    },
+    {
+      "path": "app/controllers/pages_controller.rb",
+      "category": "application",
+      "physical_lines": 6,
+      "nonblank_lines": 5,
+      "sha256": "332139c9a5890c5458946ecaeddd2aae3f504432fa0b5ed81b77f5207b910903"
+    },
+    {
+      "path": "app/controllers/registrations_controller.rb",
+      "category": "application",
+      "physical_lines": 20,
+      "nonblank_lines": 18,
+      "sha256": "735d77b6b3c832b75d5a9ec62655691e397a906ad14013c60fbeedc4deca0f99"
+    },
+    {
+      "path": "app/controllers/sessions_controller.rb",
+      "category": "application",
+      "physical_lines": 43,
+      "nonblank_lines": 39,
+      "sha256": "473d71a1e5d2ca25abc8a6eec20fb8eaafa67a0dcb3ec3c34edf28fa4bf0cb26"
+    },
+    {
+      "path": "app/controllers/signing_controller.rb",
+      "category": "application",
+      "physical_lines": 44,
+      "nonblank_lines": 37,
+      "sha256": "ec28a182bb22e1e9c6575fb57d31e256251e12c29ae38e9064879714dc778d54"
+    },
+    {
+      "path": "app/controllers/template_documents_controller.rb",
+      "category": "application",
+      "physical_lines": 66,
+      "nonblank_lines": 56,
+      "sha256": "9c46251dc16babfb174d5f8b0c5c892e462ad4ec369574b1848d942fdb5850d8"
+    },
+    {
+      "path": "app/controllers/templates_controller.rb",
+      "category": "application",
+      "physical_lines": 59,
+      "nonblank_lines": 47,
+      "sha256": "48a00ddf66c8a2b9cb4d5f5408b5c8dc4a2f59351b79cb4c41178fae4f10b331"
+    },
+    {
+      "path": "app/helpers/application_helper.rb",
+      "category": "application",
+      "physical_lines": 34,
+      "nonblank_lines": 30,
+      "sha256": "f37ec43c29e0cb845b1998a405954e3086436fcd74924171f83facbdeb291ec7"
+    },
+    {
+      "path": "app/javascript/application.js",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "d3f3d1b31962c4112a529e1f9af3760286edaf0969a4367c7ed90a4c96647650"
+    },
+    {
+      "path": "app/javascript/controllers/application.js",
+      "category": "application",
+      "physical_lines": 9,
+      "nonblank_lines": 6,
+      "sha256": "b5836315bab7b8d055ac3346bf57f933fa8aa8b37e9ea7b704cb2ae2bff129b8"
+    },
+    {
+      "path": "app/javascript/controllers/clipboard_controller.js",
+      "category": "application",
+      "physical_lines": 16,
+      "nonblank_lines": 14,
+      "sha256": "15de9bd45cd7e24c3bdcb87d018b0849aeabd47a0a6a3b0b8fe984401074383e"
+    },
+    {
+      "path": "app/javascript/controllers/hello_controller.js",
+      "category": "application",
+      "physical_lines": 7,
+      "nonblank_lines": 6,
+      "sha256": "a85435d6127f62a9dc5bece74854e75586089f18ea7759db1a9a672ef83934e5"
+    },
+    {
+      "path": "app/javascript/controllers/index.js",
+      "category": "application",
+      "physical_lines": 4,
+      "nonblank_lines": 4,
+      "sha256": "a2d8f59d301f2f6ac02171ef63c930e00ea0f0bcf3b6cd8bf0c14a0733414058"
+    },
+    {
+      "path": "app/javascript/controllers/signing_link_controller.js",
+      "category": "application",
+      "physical_lines": 16,
+      "nonblank_lines": 14,
+      "sha256": "54ad581fdc03bb4e5ee2fad4a441a22a3d95d88a4d3ff4b52342ee3f3928d4ea"
+    },
+    {
+      "path": "app/jobs/application_job.rb",
+      "category": "application",
+      "physical_lines": 7,
+      "nonblank_lines": 6,
+      "sha256": "d51e125007521b0f59765422cf3cf949b59b2054cdac6567a95b4a7aeaf1d722"
+    },
+    {
+      "path": "app/mailers/application_mailer.rb",
+      "category": "application",
+      "physical_lines": 4,
+      "nonblank_lines": 4,
+      "sha256": "51b58ee6215d29f50f4f35b309e849766e40f584016e48ec9ea66558ab352fa7"
+    },
+    {
+      "path": "app/models/application_record.rb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "12bf7d0eaefce4d50e0719991e19b48a36a7865aeb7ac745980584806155fdc1"
+    },
+    {
+      "path": "app/models/concerns/template_text.rb",
+      "category": "application",
+      "physical_lines": 18,
+      "nonblank_lines": 15,
+      "sha256": "860e7eccdcfdc0ee364a4bcb950759e3e43e8bc95eb8ad7adf5bd1c2ff2cac5a"
+    },
+    {
+      "path": "app/models/document.rb",
+      "category": "application",
+      "physical_lines": 100,
+      "nonblank_lines": 82,
+      "sha256": "fcea9dd99913b8e7803aa474e1e76bb64060a13cb55bdf9568fa69233630c409"
+    },
+    {
+      "path": "app/models/signature_acceptance.rb",
+      "category": "application",
+      "physical_lines": 12,
+      "nonblank_lines": 9,
+      "sha256": "b5757df6538d66f663f7fee13b7cc4a8d26276dd5ebf4a5ada64b51af0545ab7"
+    },
+    {
+      "path": "app/models/template.rb",
+      "category": "application",
+      "physical_lines": 17,
+      "nonblank_lines": 14,
+      "sha256": "237d22a19b34c442bed23fda14b3bff041937c91e46cceb74ccfbccb84dc980a"
+    },
+    {
+      "path": "app/models/template_revision.rb",
+      "category": "application",
+      "physical_lines": 10,
+      "nonblank_lines": 8,
+      "sha256": "322892c3fabcaacc48b36947c0e0a798392ad6be00cec4b7139e3cbd4ebd9365"
+    },
+    {
+      "path": "app/models/template_version.rb",
+      "category": "application",
+      "physical_lines": 15,
+      "nonblank_lines": 12,
+      "sha256": "3fdc75d0ea29a8dbf66d6bc929fa3647b80a6e0efec593c7e6521fa5a332bb3e"
+    },
+    {
+      "path": "app/models/user.rb",
+      "category": "application",
+      "physical_lines": 10,
+      "nonblank_lines": 9,
+      "sha256": "18b04e5d225eb5927374161a26d1b08e61b3f40ef83e7f6c2f72283f080ba2ab"
+    },
+    {
+      "path": "app/services/documents/expiration.rb",
+      "category": "application",
+      "physical_lines": 14,
+      "nonblank_lines": 14,
+      "sha256": "f305eb979ef81d3fa0c5d5060c75ae9c0f2eac2f5a7fce0713a801c18d880de1"
+    },
+    {
+      "path": "app/services/documents/manage.rb",
+      "category": "application",
+      "physical_lines": 48,
+      "nonblank_lines": 38,
+      "sha256": "dcfba0102774d11899705ac911560d39a2af490650cfc2dca8d417ca9c9a46ed"
+    },
+    {
+      "path": "app/services/documents/signing.rb",
+      "category": "application",
+      "physical_lines": 24,
+      "nonblank_lines": 20,
+      "sha256": "67272e2b13e64d3080ca22cc8ee66f9b090b52609ba077478e46a02703c3540b"
+    },
+    {
+      "path": "app/services/templates/demo_seeder.rb",
+      "category": "application",
+      "physical_lines": 26,
+      "nonblank_lines": 24,
+      "sha256": "a76ffce2ec0f7a15763695992b1340debeff9ae93648856daa3db084980f5b72"
+    },
+    {
+      "path": "app/services/templates/manage.rb",
+      "category": "application",
+      "physical_lines": 54,
+      "nonblank_lines": 46,
+      "sha256": "a84a26a7877e6ab81d1f84b9875640dba540837ed5b47d1512b0bded4e989785"
+    },
+    {
+      "path": "app/services/templates/renderer.rb",
+      "category": "application",
+      "physical_lines": 38,
+      "nonblank_lines": 32,
+      "sha256": "b5d51be65ceae8073c685e4fd6a64e06f8336b3d4e4e5c8d1819c10fb0fb5764"
+    },
+    {
+      "path": "app/views/dashboard/show.html.erb",
+      "category": "application",
+      "physical_lines": 10,
+      "nonblank_lines": 10,
+      "sha256": "3980cc40c8c2d88af64b24fbf4e8ed6624697eb795d20b090a4bef66782a0b3c"
+    },
+    {
+      "path": "app/views/documents/_form.html.erb",
+      "category": "application",
+      "physical_lines": 15,
+      "nonblank_lines": 15,
+      "sha256": "0c1a138fd8b3da3d01a2ceae95366dd86b430795de7c4bcbd9bd80d7e6f07e2f"
+    },
+    {
+      "path": "app/views/documents/_table.html.erb",
+      "category": "application",
+      "physical_lines": 7,
+      "nonblank_lines": 7,
+      "sha256": "addafd5c08d15512db7effb35803c0b1ce956db7a90929d463981a0e753b7183"
+    },
+    {
+      "path": "app/views/documents/edit.html.erb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "baab4a9b56f44ad3dd61c30804cac377227babbab76049e6c5ff5c3b0171daa3"
+    },
+    {
+      "path": "app/views/documents/index.html.erb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "6086f9265f906a6e3cd2c737eed5be2740413196f007bb895c1eb389df2f00c3"
+    },
+    {
+      "path": "app/views/documents/new.html.erb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "6671ccdce79ec0a27dbbb481e3c0a8a4d11389be8b01ffd16a8fa55d3992c7fd"
+    },
+    {
+      "path": "app/views/documents/show.html.erb",
+      "category": "application",
+      "physical_lines": 14,
+      "nonblank_lines": 14,
+      "sha256": "c5b468f7ce566efed9159117ab0458dcd3e92f18d0d0c7d8e108b60582d75178"
+    },
+    {
+      "path": "app/views/layouts/application.html.erb",
+      "category": "application",
+      "physical_lines": 49,
+      "nonblank_lines": 49,
+      "sha256": "bffa459e45706398ae18d86f4e59e4e5afb1879387bd8ab7aaab07efbb29266e"
+    },
+    {
+      "path": "app/views/layouts/mailer.html.erb",
+      "category": "application",
+      "physical_lines": 13,
+      "nonblank_lines": 12,
+      "sha256": "3be3ece9c575096f91f8ecc6a4efb0c7ffd509d2ed4b06c3461bd920201bbd37"
+    },
+    {
+      "path": "app/views/layouts/mailer.text.erb",
+      "category": "application",
+      "physical_lines": 1,
+      "nonblank_lines": 1,
+      "sha256": "51353f9de3a26d4b28f7db91152bf56d31cfa9e4bd3c834680772a63cd374698"
+    },
+    {
+      "path": "app/views/pages/home.html.erb",
+      "category": "application",
+      "physical_lines": 25,
+      "nonblank_lines": 25,
+      "sha256": "d15f9097eae30672903e50e439458235ae8eb84a90060679255b20a62292cb79"
+    },
+    {
+      "path": "app/views/pwa/manifest.json.erb",
+      "category": "application",
+      "physical_lines": 22,
+      "nonblank_lines": 22,
+      "sha256": "b9e0cca21a123e10bda72a4979626271b27305c941ab24536fd4a17daa0e9346"
+    },
+    {
+      "path": "app/views/pwa/service-worker.js",
+      "category": "application",
+      "physical_lines": 26,
+      "nonblank_lines": 26,
+      "sha256": "54bba97f108ac8d65af816aab152cc1860c9d9809641ba845231131db56d59bf"
+    },
+    {
+      "path": "app/views/registrations/new.html.erb",
+      "category": "application",
+      "physical_lines": 12,
+      "nonblank_lines": 12,
+      "sha256": "f0fb9314da78f66405bee8d50a863ae1c0a09927d4bffd1448e00bc391023848"
+    },
+    {
+      "path": "app/views/sessions/new.html.erb",
+      "category": "application",
+      "physical_lines": 10,
+      "nonblank_lines": 10,
+      "sha256": "4d2b68fd597c87ed6b936efcdd12a2426e5cb4092634417d48cfc33574eac7a7"
+    },
+    {
+      "path": "app/views/shared/_errors.html.erb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "6db20bcc5733cef63d0c5f8f169a028f9725913e19729dbb30d2a4d2fe721c5e"
+    },
+    {
+      "path": "app/views/signing/_access.html.erb",
+      "category": "application",
+      "physical_lines": 4,
+      "nonblank_lines": 4,
+      "sha256": "92d1a804ac95abf2833125cb5d3f26b8a1d86b303402bf35b99e4500e51530dc"
+    },
+    {
+      "path": "app/views/signing/complete.html.erb",
+      "category": "application",
+      "physical_lines": 2,
+      "nonblank_lines": 2,
+      "sha256": "a4c388478986c82a594f117616b395a9766d7a70b966659e1ebaa656d55e26a4"
+    },
+    {
+      "path": "app/views/signing/show.html.erb",
+      "category": "application",
+      "physical_lines": 18,
+      "nonblank_lines": 18,
+      "sha256": "97e8beef8718e312a327e886582ae8af02af3e90317a39b5ad0b15a454465b98"
+    },
+    {
+      "path": "app/views/signing/unavailable.html.erb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "5fee2deb74ba290a4566f6d2259b7c909e536e87f475a2614d9c36d985ed8acd"
+    },
+    {
+      "path": "app/views/template_documents/new.html.erb",
+      "category": "application",
+      "physical_lines": 14,
+      "nonblank_lines": 14,
+      "sha256": "037816926052cfb9e0e92ea8d27293b7e0406c22286a334f915cb5e9037be4df"
+    },
+    {
+      "path": "app/views/templates/_form.html.erb",
+      "category": "application",
+      "physical_lines": 8,
+      "nonblank_lines": 8,
+      "sha256": "fd78edef07cac99ba656c365f9d6714b24dc875debef21e73e95c7597c286d45"
+    },
+    {
+      "path": "app/views/templates/edit.html.erb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "d402fa864b55947f4e960427706994715d32eb7b3e36a1d31953302afbde4243"
+    },
+    {
+      "path": "app/views/templates/history.html.erb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "3dd25982ac26bef029283a04e5600c3150fa8299c819751e9c636785038ebe65"
+    },
+    {
+      "path": "app/views/templates/index.html.erb",
+      "category": "application",
+      "physical_lines": 9,
+      "nonblank_lines": 9,
+      "sha256": "c888140ffa7227f4c7d9f9dd86bb879be5367d169b1b191e0b18b4c17f503d97"
+    },
+    {
+      "path": "app/views/templates/new.html.erb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "8792fda7d1f8c31f541e0c28c391d46f96b79a4679731813a091c2ac58f54ee2"
+    },
+    {
+      "path": "app/views/templates/show.html.erb",
+      "category": "application",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "ccc396fb1bddfcde16974b37403eb214446ec9b29a5bbbb60c80983794bd6b29"
+    },
+    {
+      "path": "bin/brakeman",
+      "category": "infrastructure",
+      "physical_lines": 7,
+      "nonblank_lines": 5,
+      "sha256": "07b92fb22bd01ef524922c0603f26454990c28e48abe8013b71d049c2478b711"
+    },
+    {
+      "path": "bin/bundler-audit",
+      "category": "infrastructure",
+      "physical_lines": 6,
+      "nonblank_lines": 5,
+      "sha256": "596727c9ab41b3674ead46d2502b0277fe19bed9cf1769e885f925079aa3dec0"
+    },
+    {
+      "path": "bin/ci",
+      "category": "infrastructure",
+      "physical_lines": 6,
+      "nonblank_lines": 5,
+      "sha256": "31bf90b11253f5e8c3b382b8c88100c3f0d2cc995b911f3f28de2236d8c36b57"
+    },
+    {
+      "path": "bin/dev",
+      "category": "infrastructure",
+      "physical_lines": 16,
+      "nonblank_lines": 12,
+      "sha256": "7a30cf45206be40b4446525717a7eff0099a3fdf2f7dc0ba4472b6815833e038"
+    },
+    {
+      "path": "bin/docker-entrypoint",
+      "category": "infrastructure",
+      "physical_lines": 8,
+      "nonblank_lines": 6,
+      "sha256": "e6f4e69ab211df5b889469d1768a86d1f176a6b3861c20704bf1fcab79578d56"
+    },
+    {
+      "path": "bin/importmap",
+      "category": "infrastructure",
+      "physical_lines": 4,
+      "nonblank_lines": 3,
+      "sha256": "aaaf65c0637afc4a2cd13b04660761cfaee83d7f6e81446986a3e3aaafb84da5"
+    },
+    {
+      "path": "bin/jobs",
+      "category": "infrastructure",
+      "physical_lines": 6,
+      "nonblank_lines": 4,
+      "sha256": "7b51c14b8871a220d4227a09c87634c5f20d574c5ea3cdfaeb32fa62e35fc988"
+    },
+    {
+      "path": "bin/kamal",
+      "category": "infrastructure",
+      "physical_lines": 27,
+      "nonblank_lines": 21,
+      "sha256": "9d9795dd6ef45db91f28a71e185555485aab41c09e9bad44014a2a9df27b0c4c"
+    },
+    {
+      "path": "bin/kamal.cmd",
+      "category": "infrastructure",
+      "physical_lines": 30,
+      "nonblank_lines": 23,
+      "sha256": "70d2c19eb1f1cfd10029cb749c93b65d301a9a52f467b9f28384bc907cb69f57"
+    },
+    {
+      "path": "bin/rails",
+      "category": "infrastructure",
+      "physical_lines": 4,
+      "nonblank_lines": 4,
+      "sha256": "976f4cf5c2cdf947b57f7bb4015ebe13e05af429cd3dd6c01c5a07c5564b7dc2"
+    },
+    {
+      "path": "bin/rake",
+      "category": "infrastructure",
+      "physical_lines": 4,
+      "nonblank_lines": 4,
+      "sha256": "d482a2eca7d54f4bc40cce6639b79d0118daa1fcf47875ce1566e21a44a41ac4"
+    },
+    {
+      "path": "bin/render-build.sh",
+      "category": "infrastructure",
+      "physical_lines": 8,
+      "nonblank_lines": 7,
+      "sha256": "b1140643866758f67e24c71272a0c055206a3cd79e859e2b02b961358730ed63"
+    },
+    {
+      "path": "bin/render-start.sh",
+      "category": "infrastructure",
+      "physical_lines": 15,
+      "nonblank_lines": 13,
+      "sha256": "f9681061d99f741b6d146cb7bb29d3d5f36b43a38ad02766e7fe4e710e641a7c"
+    },
+    {
+      "path": "bin/rubocop",
+      "category": "infrastructure",
+      "physical_lines": 8,
+      "nonblank_lines": 6,
+      "sha256": "1d3e5bfc8befd1849715bae3664f433faa833e0f4557c59707e846ba20aa7167"
+    },
+    {
+      "path": "bin/setup",
+      "category": "infrastructure",
+      "physical_lines": 35,
+      "nonblank_lines": 27,
+      "sha256": "803e2ea67fa6fc58663895dbd70b2d345835d476bd4d609d8fdf31bd514786d3"
+    },
+    {
+      "path": "bin/thrust",
+      "category": "infrastructure",
+      "physical_lines": 5,
+      "nonblank_lines": 4,
+      "sha256": "cfe66cbb93235cc4b5b0f7e7f59f328ce5bd3b268756b78831bcefe8024ccfef"
+    },
+    {
+      "path": "config.ru",
+      "category": "infrastructure",
+      "physical_lines": 6,
+      "nonblank_lines": 4,
+      "sha256": "1a5090e57cf9301e8bda3fec3abe4c72fbc001f6cd4909fd80b6cd488ab531b9"
+    },
+    {
+      "path": "config/application.rb",
+      "category": "infrastructure",
+      "physical_lines": 30,
+      "nonblank_lines": 25,
+      "sha256": "7c9b4137320ace1a01c7f52197b48f4980f2ae1575c15c96cbc36f779eec2fc4"
+    },
+    {
+      "path": "config/boot.rb",
+      "category": "infrastructure",
+      "physical_lines": 4,
+      "nonblank_lines": 3,
+      "sha256": "bb5a9499136e72c70c557bc3ff4d2661cc9b05dc5b848fb720540e3fe716e4ea"
+    },
+    {
+      "path": "config/bundler-audit.yml",
+      "category": "infrastructure",
+      "physical_lines": 5,
+      "nonblank_lines": 4,
+      "sha256": "cf66f718f2c84c0ab6ae50fcb0b1323751c11522de80d0c66e25e4b5680cde55"
+    },
+    {
+      "path": "config/cable.yml",
+      "category": "infrastructure",
+      "physical_lines": 13,
+      "nonblank_lines": 11,
+      "sha256": "c9f2f49a1fbe862661fca21c230e6c20d24ff2d5285cf1c6340d0d9a5139abee"
+    },
+    {
+      "path": "config/cache.yml",
+      "category": "infrastructure",
+      "physical_lines": 15,
+      "nonblank_lines": 12,
+      "sha256": "9fa723138c3ce43be35e7e23e53fd64fe05180314b32a6db61cea52056a0cfb0"
+    },
+    {
+      "path": "config/ci.rb",
+      "category": "infrastructure",
+      "physical_lines": 24,
+      "nonblank_lines": 19,
+      "sha256": "ac7709eb3bcfb751062fb259c3e32eb0645249286d43d6886e3a99d5ba0d76d5"
+    },
+    {
+      "path": "config/database.yml",
+      "category": "infrastructure",
+      "physical_lines": 29,
+      "nonblank_lines": 26,
+      "sha256": "33b10359c81321dcdfe7d315ba8b67c4ba944d02428abaa7de224272205d1701"
+    },
+    {
+      "path": "config/deploy.yml",
+      "category": "infrastructure",
+      "physical_lines": 119,
+      "nonblank_lines": 101,
+      "sha256": "a95ef3e665c4c866b8fedbc1b732b3d9ef81fc57dfbe92c598a646f0c9117876"
+    },
+    {
+      "path": "config/environment.rb",
+      "category": "infrastructure",
+      "physical_lines": 5,
+      "nonblank_lines": 4,
+      "sha256": "73b2e731e02cedb9dc0335e1a35c3a2b7738032e3aa7e62ac32cbb8432b43c69"
+    },
+    {
+      "path": "config/environments/development.rb",
+      "category": "infrastructure",
+      "physical_lines": 78,
+      "nonblank_lines": 55,
+      "sha256": "0d8297c851e8127c69cd5c9269232f0c38dcc84e7fb3176d1fe46655e980872a"
+    },
+    {
+      "path": "config/environments/production.rb",
+      "category": "infrastructure",
+      "physical_lines": 98,
+      "nonblank_lines": 74,
+      "sha256": "a0a7332fc63bb1d1a0198a75b276ba5f386b3622a7b633f6df398b6204015189"
+    },
+    {
+      "path": "config/environments/test.rb",
+      "category": "infrastructure",
+      "physical_lines": 53,
+      "nonblank_lines": 39,
+      "sha256": "b3208a3cb7383c4383dfa44d815fd0f942d03ca64ca2ca06a104aad9773403e2"
+    },
+    {
+      "path": "config/importmap.rb",
+      "category": "infrastructure",
+      "physical_lines": 7,
+      "nonblank_lines": 6,
+      "sha256": "148fdf21d156d2d1274627caa734d3e2d05ce23ae60e6a371fae054933ca30be"
+    },
+    {
+      "path": "config/initializers/assets.rb",
+      "category": "infrastructure",
+      "physical_lines": 7,
+      "nonblank_lines": 5,
+      "sha256": "f55d4ce66ec2b48256ff492c99c7105b7cc1726c78789dffdbee2611e193c1a6"
+    },
+    {
+      "path": "config/initializers/content_security_policy.rb",
+      "category": "infrastructure",
+      "physical_lines": 29,
+      "nonblank_lines": 27,
+      "sha256": "ce826e17b3fb793bff050c64f2d515da14b0a63b77f0144368646597075fbdd5"
+    },
+    {
+      "path": "config/initializers/filter_parameter_logging.rb",
+      "category": "infrastructure",
+      "physical_lines": 9,
+      "nonblank_lines": 8,
+      "sha256": "44559d27417ac6ed80614bb8ee585283a887d9274eea8895963f0596d6a1cd36"
+    },
+    {
+      "path": "config/initializers/inflections.rb",
+      "category": "infrastructure",
+      "physical_lines": 16,
+      "nonblank_lines": 14,
+      "sha256": "e2c18b803625a073b25e4ee4460677da33a8bf19bbbcad629718a8e15c58acc2"
+    },
+    {
+      "path": "config/initializers/session_store.rb",
+      "category": "infrastructure",
+      "physical_lines": 3,
+      "nonblank_lines": 3,
+      "sha256": "f6507f16d26a41d3bcaa63270d3d2b69fd4eb238b7253584b0781912c7d1a851"
+    },
+    {
+      "path": "config/locales/en.yml",
+      "category": "infrastructure",
+      "physical_lines": 31,
+      "nonblank_lines": 30,
+      "sha256": "ad72af216ad0a67a1155c685535698fdd2a7138810c7e6dcb5eab7f0cc1c5922"
+    },
+    {
+      "path": "config/puma.rb",
+      "category": "infrastructure",
+      "physical_lines": 47,
+      "nonblank_lines": 43,
+      "sha256": "3ac1e4c630c5fa44e96fa42b7b64cc7f82d82029cb849383543b369b639d5e30"
+    },
+    {
+      "path": "config/queue.yml",
+      "category": "infrastructure",
+      "physical_lines": 18,
+      "nonblank_lines": 15,
+      "sha256": "7372ec01386a1f81e2f5b565bdda42bfa076e0c34870515b933c7ded52ea71a1"
+    },
+    {
+      "path": "config/recurring.yml",
+      "category": "infrastructure",
+      "physical_lines": 15,
+      "nonblank_lines": 14,
+      "sha256": "1b308d44c793b26502423ab52361e20713c1294a47743d65f339059311e6dbe8"
+    },
+    {
+      "path": "config/routes.rb",
+      "category": "infrastructure",
+      "physical_lines": 32,
+      "nonblank_lines": 29,
+      "sha256": "e3792bf93205b8106828c5ac79a417fb5dd99633e64b60a005b097457f556c50"
+    },
+    {
+      "path": "config/storage.yml",
+      "category": "infrastructure",
+      "physical_lines": 27,
+      "nonblank_lines": 23,
+      "sha256": "bb472986ec9dd77d0e30e840d8f2b21b9c435aa65e3096aa813e4bc2df658edb"
+    },
+    {
+      "path": "db/cable_schema.rb",
+      "category": "generated_schema",
+      "physical_lines": 10,
+      "nonblank_lines": 10,
+      "sha256": "e856992621c454adf0f3da566c432273a592ff7c7d6f2562981ceaf1b893e095"
+    },
+    {
+      "path": "db/cache_schema.rb",
+      "category": "generated_schema",
+      "physical_lines": 12,
+      "nonblank_lines": 12,
+      "sha256": "31d6012503419a1be4aa87c4d18b2a9a85d84b6c23851428362d9a5e7b0eb26c"
+    },
+    {
+      "path": "db/migrate/20261014000100_create_users.rb",
+      "category": "infrastructure",
+      "physical_lines": 11,
+      "nonblank_lines": 11,
+      "sha256": "a0609e71729a1b8b6e0b82932b2782867f8f001052f9f746c3015e7940294e97"
+    },
+    {
+      "path": "db/migrate/20261014000200_create_documents.rb",
+      "category": "infrastructure",
+      "physical_lines": 19,
+      "nonblank_lines": 19,
+      "sha256": "bc2c356bbb08f356357ceee387578cb35db51e7558c933c4ba3c3705ebbd56ea"
+    },
+    {
+      "path": "db/migrate/20261014000300_add_signer_name_to_documents.rb",
+      "category": "infrastructure",
+      "physical_lines": 5,
+      "nonblank_lines": 5,
+      "sha256": "6768251de6d861535e59627fa6b479b334243611536c29d4c5dca426477bbf5e"
+    },
+    {
+      "path": "db/migrate/20261014000400_create_templates.rb",
+      "category": "infrastructure",
+      "physical_lines": 23,
+      "nonblank_lines": 22,
+      "sha256": "0fe286e6244a5bd63b09050621a2aaf00e120557e72ec1dea068ef837e8576c2"
+    },
+    {
+      "path": "db/queue_schema.rb",
+      "category": "generated_schema",
+      "physical_lines": 160,
+      "nonblank_lines": 147,
+      "sha256": "f3e108265d3b90a51542cf6994edf8f7646e2efa873b26f8b472740e865188b7"
+    },
+    {
+      "path": "db/schema.rb",
+      "category": "generated_schema",
+      "physical_lines": 73,
+      "nonblank_lines": 68,
+      "sha256": "2d47a59bcc0d0af52b7910affb3bb2475d6ce892f373e2fa85048eaacd41590c"
+    },
+    {
+      "path": "db/seeds.rb",
+      "category": "infrastructure",
+      "physical_lines": 10,
+      "nonblank_lines": 10,
+      "sha256": "247f08c5c65d146adf29dc34269367dc5e0e56e42aa1b6eccafa830a067ce110"
+    },
+    {
+      "path": "lib/tasks/documents.rake",
+      "category": "infrastructure",
+      "physical_lines": 7,
+      "nonblank_lines": 7,
+      "sha256": "e7a6a503be04d074a7e3654ed08ffd225d3c0cdcdb0827506f18f3b9c774ba82"
+    },
+    {
+      "path": "script/check_render_production.rb",
+      "category": "infrastructure",
+      "physical_lines": 140,
+      "nonblank_lines": 129,
+      "sha256": "f347e5c4fc2126d4cd60e8e5e2c2ebe45c924db27f375403e46e96fc9fa517cf"
+    },
+    {
+      "path": "script/check_template_schema.rb",
+      "category": "infrastructure",
+      "physical_lines": 29,
+      "nonblank_lines": 25,
+      "sha256": "c49974c249c5a93f4e8799b49e14bbcd38f04e41d406796f7114a468e3cecbec"
+    },
+    {
+      "path": "test/controllers/sessions_controller_test.rb",
+      "category": "tests",
+      "physical_lines": 59,
+      "nonblank_lines": 52,
+      "sha256": "afbbf9f0fb9688eb9010c391fb02d06c53cc501bc82c3c3f4535955644250b07"
+    },
+    {
+      "path": "test/integration/csrf_origin_test.rb",
+      "category": "tests",
+      "physical_lines": 182,
+      "nonblank_lines": 168,
+      "sha256": "af19d88a7f0344e7d6c97543fbf534a7e2a60a928eb3248c7991e6c53bf2f2f7"
+    },
+    {
+      "path": "test/integration/navigation_test.rb",
+      "category": "tests",
+      "physical_lines": 83,
+      "nonblank_lines": 74,
+      "sha256": "5f58504c604b8c1ac4d48e3b0202891f6df8a5c6f7decf0794309ea3e93dcaa4"
+    },
+    {
+      "path": "test/integration/signflow_workflow_test.rb",
+      "category": "tests",
+      "physical_lines": 301,
+      "nonblank_lines": 282,
+      "sha256": "45719d1082759e85a06f03b632201042f989ec2504705e07087ce4abb35f0a68"
+    },
+    {
+      "path": "test/integration/template_schema_regression_test.rb",
+      "category": "tests",
+      "physical_lines": 99,
+      "nonblank_lines": 93,
+      "sha256": "7cac85c6542662c8ee8de9ac8e239f24203c7f5e1fb4a9ae21c7dc386f08afa5"
+    },
+    {
+      "path": "test/integration/template_workflow_test.rb",
+      "category": "tests",
+      "physical_lines": 238,
+      "nonblank_lines": 223,
+      "sha256": "d86c4e89dea7d8f4d8368a852008847fabf25bf7cf5d72c9d853e9901f3ebd53"
+    },
+    {
+      "path": "test/models/document_test.rb",
+      "category": "tests",
+      "physical_lines": 129,
+      "nonblank_lines": 115,
+      "sha256": "bcc3370fcfeb017f378266c5a2406f3b376d113df6a8812852f3a5c066e44951"
+    },
+    {
+      "path": "test/models/signature_acceptance_test.rb",
+      "category": "tests",
+      "physical_lines": 13,
+      "nonblank_lines": 12,
+      "sha256": "c94f2395af8ace84aa88cacf46c0abdc60a5e96bbcefd64137d8052064780a8e"
+    },
+    {
+      "path": "test/models/template_test.rb",
+      "category": "tests",
+      "physical_lines": 47,
+      "nonblank_lines": 42,
+      "sha256": "208998fa83e157068197ac3b4ba2fb9d3143311cb643c00e5e3d361cb488002c"
+    },
+    {
+      "path": "test/models/user_test.rb",
+      "category": "tests",
+      "physical_lines": 43,
+      "nonblank_lines": 37,
+      "sha256": "49046fbf123922257cc1c5b528ae388d668c32407127b31748202c6e63212c9e"
+    },
+    {
+      "path": "test/services/documents_test.rb",
+      "category": "tests",
+      "physical_lines": 61,
+      "nonblank_lines": 54,
+      "sha256": "6c2c0d0fc53c127c1878ec77c5141ff2b9a2f4c53a6a0e21f39b969fa3208f97"
+    },
+    {
+      "path": "test/services/expiration_test.rb",
+      "category": "tests",
+      "physical_lines": 42,
+      "nonblank_lines": 39,
+      "sha256": "26630d4f0d1dbe732de941912a576110b50cdb662986c06fca3b59d343a4c0e2"
+    },
+    {
+      "path": "test/services/template_renderer_test.rb",
+      "category": "tests",
+      "physical_lines": 35,
+      "nonblank_lines": 30,
+      "sha256": "8e7577f143131ee792aa16d46400b594bf74fefe61b55118307546cf2c0b24d5"
+    },
+    {
+      "path": "test/services/templates_manage_test.rb",
+      "category": "tests",
+      "physical_lines": 94,
+      "nonblank_lines": 86,
+      "sha256": "da4951fd4d16db40665bb0fab68dd49c3d9db17d677266b80bfcfcf94f2162a8"
+    },
+    {
+      "path": "test/test_helper.rb",
+      "category": "tests",
+      "physical_lines": 37,
+      "nonblank_lines": 30,
+      "sha256": "50cfd7190fce858ae6cc18c21a11198b7a78db4c764413fe240e0b3804fa4d03"
+    }
+  ]
+}
