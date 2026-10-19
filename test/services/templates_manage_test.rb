@@ -76,12 +76,12 @@ class TemplatesManageTest < ActiveSupport::TestCase
   test "demo seeds are idempotent preserve edits and do not overwrite unrelated templates" do
     owner = @template.user
     assert_difference [ "Template.count", "TemplateVersion.count" ], 3 do
-      Templates::DemoSeeder.call(user: owner)
+      assert_equal 3, Templates::DemoSeeder.call(user: owner)
     end
     seeded = owner.templates.find_by!(seed_key: "software")
     @manager.update!(seeded.id, title: "My edited sample", content: "My custom text")
     assert_no_difference [ "Template.count", "TemplateVersion.count" ] do
-      Templates::DemoSeeder.call(user: owner)
+      assert_equal 0, Templates::DemoSeeder.call(user: owner)
     end
     assert_equal "My edited sample", seeded.reload.title
     assert_equal "My custom text", seeded.content

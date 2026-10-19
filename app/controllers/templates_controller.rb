@@ -39,8 +39,13 @@ class TemplatesController < ApplicationController
   end
 
   def add_examples
-    Templates::DemoSeeder.call(user: current_user)
-    redirect_to templates_path, status: :see_other, notice: "Eksik demo şablonları eklendi. Mevcut şablonlarınız korunuyor."
+    created_count = Templates::DemoSeeder.call(user: current_user)
+    notice = if created_count.zero?
+      "Tüm demo şablonları zaten mevcut. Herhangi bir değişiklik yapılmadı."
+    else
+      "#{created_count} demo şablonu eklendi. Mevcut şablonlarınız korunuyor."
+    end
+    redirect_to templates_path, status: :see_other, notice: notice
   end
 
   private

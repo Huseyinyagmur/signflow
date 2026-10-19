@@ -15,11 +15,14 @@ module Templates
     def self.call(user:)
       user.with_lock do
         manager = Manage.new(user: user)
+        created_count = 0
         EXAMPLES.each do |example|
           next if user.templates.exists?(seed_key: example.fetch(:key))
 
           manager.create!(example.except(:key), seed_key: example.fetch(:key))
+          created_count += 1
         end
+        created_count
       end
     end
   end

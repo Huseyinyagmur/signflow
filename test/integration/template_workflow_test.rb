@@ -1,6 +1,9 @@
 require "test_helper"
+require "active_support/testing/constant_stubbing"
 
 class TemplateWorkflowTest < ActionDispatch::IntegrationTest
+  include ActiveSupport::Testing::ConstantStubbing
+
   setup do
     @owner = create_user
     @manager = Templates::Manage.new(user: @owner)
@@ -128,12 +131,49 @@ class TemplateWorkflowTest < ActionDispatch::IntegrationTest
       post add_examples_templates_path
     end
     assert_redirected_to templates_path
+    assert_equal "3 demo şablonu eklendi. Mevcut şablonlarınız korunuyor.", flash[:notice]
     assert_equal 3, @owner.templates.count
+    seeded = @owner.templates.find_by!(seed_key: "software")
+    @manager.update!(seeded.id, title: "My edited sample", content: "My custom text")
+    versions = seeded.versions.order(:number).pluck(:id, :number, :title, :content)
     assert_no_difference [ "Template.count", "TemplateVersion.count" ] do
       post add_examples_templates_path
     end
+    assert_equal "Tüm demo şablonları zaten mevcut. Herhangi bir değişiklik yapılmadı.", flash[:notice]
+    assert_equal versions, seeded.versions.order(:number).pluck(:id, :number, :title, :content)
+    assert_equal "My custom text", seeded.reload.content
     get templates_path
     assert_select "article", count: 3
+  end
+
+  test "demo action reports only missing examples and preserves existing versions" do
+    example = Templates::DemoSeeder::EXAMPLES.first
+    existing = @manager.create!(example.except(:key), seed_key: example.fetch(:key))
+    @manager.update!(existing.id, title: "Edited demo", content: "Custom content")
+    versions = existing.versions.order(:number).pluck(:id, :number, :title, :content)
+
+    assert_difference [ "Template.count", "TemplateVersion.count" ], 2 do
+      post add_examples_templates_path
+    end
+    assert_redirected_to templates_path
+    assert_equal "2 demo şablonu eklendi. Mevcut şablonlarınız korunuyor.", flash[:notice]
+    assert_equal versions, existing.versions.order(:number).pluck(:id, :number, :title, :content)
+    assert_equal "Custom content", existing.reload.content
+    assert_equal 3, @owner.templates.count
+  end
+
+  test "demo seeding failure does not announce success" do
+    get templates_path
+    assert_response :success
+    previous_notice = flash[:notice]
+    examples = [ Templates::DemoSeeder::EXAMPLES.first,
+      Templates::DemoSeeder::EXAMPLES.second.merge(title: "") ]
+    stub_const(Templates::DemoSeeder, :EXAMPLES, examples) do
+      assert_no_difference [ "Template.count", "TemplateVersion.count" ] do
+        assert_raises(ActiveModel::ValidationError) { post add_examples_templates_path }
+      end
+    end
+    assert_equal previous_notice, flash[:notice]
   end
 
   test "template routes require login" do
