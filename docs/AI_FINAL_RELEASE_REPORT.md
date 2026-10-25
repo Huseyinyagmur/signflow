@@ -1,5 +1,7 @@
 # SignFlow AI — final kanıt ve kontrollü yayın raporu
 
+**Sonraki GitHub durumu (25.10.2026):** Kullanıcı `main / Auto-Deploy Off` teyidi verdi; bu bilgi üzerine [AI commit'i 0b088dd](https://github.com/Huseyinyagmur/signflow/commit/0b088dd789a2ed4aa764fb8a99dc42cc11982d60) main'e normal push edildi. [İlk yeni CI](https://github.com/Huseyinyagmur/signflow/actions/runs/40177476290) dört işte başarılı, gem audit nedeniyle scan_ruby'de başarısız. crass 1.0.7 → 1.0.8 güvenlik düzeltmesi yerelde tam Rails (190/1978), lint, audit ve Brakeman ile geçti; ayrı düzeltme commit'inin uzak sonucu son yanıtta bildirilecek. Aşağıdaki önceki push engeli, teyit gelmeden önceki tarihsel durumdur. Production deploy yapılmadı; Auto-Deploy yalnız kullanıcı beyanıyla doğrulandı, bağımsız Dashboard erişimi yok.
+
 25.10.2026. [Challenge kaydı](../CHALLENGE_LOG.md), [web mimarisi](AI_CONTRACT_WEB_REPORT.md), [güvenli demo](AI_CONTRACT_WEB_DEMO.md). Bu görev yerel commit'i ve ancak Render Auto-Deploy güvenliği doğrulanırsa push'u yetkilendirir; production deploy için ayrıca son kullanıcı onayı gerekir. Yeni gerçek Gemini çağrısı yapılmadı.
 
 ## Kanıt düzeyleri
