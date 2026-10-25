@@ -163,3 +163,66 @@ Windows libvips opsiyonel DLL yükleme, Rack literal string ve Puma Unix signal 
 ### Aşama 2 öncesi karar ve eksikler
 
 **Karar: dar API yönüyle devam.** Yerel teknik kabul testleri geçti; bu, kullanıcı acısının veya LLM katmanının doğrulandığı anlamına gelmez. Aşama 2'de gerçek LLM araç döngüsü, sentetik değerlendirme/yanlış alan davranışı, sağlayıcı/veri/maliyet politikası ayrı ele alınmalı. Credential UI/güvenli secret store operasyonu ve API kota/rate-limit henüz yok; genel kullanıma açmadan önce çözülmeli. Render Auto-Deploy ve güncel CI doğrulanmadan main'e push/deploy yapılmayacak. Bu çalışma commit/push/deploy veya ücretli servis oluşturmadı.
+
+## Aşama 2 — Ruby LLM istemcisi, henüz gerçek sağlayıcı kanıtı yok (25.10.2026)
+
+### Başlangıç ve kapsam
+
+Kullanıcının ek dosyadaki Aşama 2 talebi doğrultusunda yalnız yerel istemci, test ve belgeler geliştirildi. Başlangıç yerel SHA: **`d0e747978b13ec55f5cc9edae2c723c4d4fe910b`**, 25.10.2026 08:56:39 +03:00, `feat: add secure agent draft API with idempotency`. Bu SHA Aşama 2 kodunu içermez; yeni kod uncommitted çalışma ağacındadır. Commit/push/deploy yapılmadı. Aşama 1'in ilk prompt bölümü değiştirilmedi, tarihsel kayıtlar silinmedi.
+
+### Yapılanlar ve dosyalar
+
+- `script/signflow_agent.rb`: gerçek sağlayıcı için Ruby CLI, sentetik veri/ücret izni, model preflight, takip soruları, alan onayı, güvenli progress ve sonuç.
+- `script/support/signflow_agent.rb`, `script/support/llm/{anthropic_provider,runner,tools,job,secrets}.rb`: provider arayüzü, Anthropic Models/Messages HTTP adaptörü, üç izinli tool, şema/cevap/grounding doğrulama, kalıcı aynı-key/payload recovery, sınırlı retry ve maskeli secret girişi.
+- `script/support/agent_http_client.rb`: Aşama 1 transport'una typed HTTP status eklendi; eski deterministik demo istemcisi LLM olarak yeniden adlandırılmadı.
+- `.env.example`: yalnız isimler/default; gerçek secret yok, otomatik yüklenmez.
+- `test/lib/signflow_agent_test.rb`, `test/lib/anthropic_provider_test.rb`, `test/integration/llm_agent_handoff_test.rb`: fake provider/transport ve gerçek Rails API handoff testleri.
+- `.github/workflows/ci.yml`: PG job'ına yeni handoff testi. Uzak job tetiklenmedi/sonucu bilinmiyor.
+- `README.md`, `AGENT.md`, bu log; [teknik rapor](docs/AGENT_LLM_STAGE2.md) ve [canlı demo rehberi](docs/AGENT_LLM_DEMO.md).
+
+Agent'a send/sign, session/cookie/CSRF/parola, SQL, terminal veya keyfi HTTP yetkisi eklenmedi. Web/model/route/şema güvenlik kuralları değiştirilmedi. Model tam sözleşme metnini almaz; ham hukuki metin üretemez. Alanlar kullanıcı mesajında bulunmalı; ücret tam açık TL/TRY/₺ ifadesiyle korunur ve yerelde EVET ile doğrulatılır. Bu kontrol, semantik/hukuki doğruluk veya her injection'ın çözüldüğü iddiası değildir.
+
+### Model, gerçek çağrılar ve maliyet
+
+| Alan | Gerçek kayıt |
+| --- | --- |
+| Yapılandırılan model | `claude-haiku-4-5-20251001`, Anthropic. |
+| Kamuya açık erişim/fiyat kontrolü | 25.10.2026 [resmî model sayfası](https://platform.claude.com/docs/en/models/haiku-4-5/overview): Active (legacy), $1/1M input, $5/1M output. Hesap erişim kontrolü değildir. |
+| Bu çalışma sırasında gerçek Models/Messages isteği | **0**. Ortamda ANTHROPIC_API_KEY yoktu; özel credential depoları aranmadı, ücretli kullanım izni verilmedi. |
+| Gerçekte çalıştırılan model | Yok. Adaptör kodu gerçek key ile henüz sınanmadı. |
+| Gerçek input/output token | Ölçüm yok; fake testlerin usage sayıları gerçek değildir. |
+| Bu oturumun yaptığı ücretli LLM çağrı maliyeti | 0 $; hesap/fatura denetlenmedi. Coding agent abonelik maliyeti bu alan değildir. |
+| Varsayımsal maliyet | 8.000 input + 2.000 output toplamıyla $0,018/iş. Bu ölçüm değil; retry/uzun bağlam/vergiler ayrıca etkiler. |
+
+Gerçek çalıştırma kullanıcı `SIGNFLOW_SYNTHETIC_DATA=true` ve ücret izni için `SIGNFLOW_ALLOW_PAID_LLM=true` açmadan başlamaz. Anahtarlar yalnız env/maskeli console ile alınır; modele/loga verilmez. CLI önce hesapta Models preflight yapar; 401/404 durumunda fake başarı/model fallback yoktur. Bu çalışmada bu bayraklar gerçek sağlayıcı tüketimi için açılmadı.
+
+### Tool çağrısı kanıtı — fake model olduğunu koruyarak
+
+Yeni `LlmAgentHandoffTest` gerçek Rails integration stack'ine üç aracı çağırdı: **get_template_version 200 → create_draft 201 → get_draft 200**. Bu sıralama ve kodlar testte assert edildi. Aynı job'ın resume/replay'inde yeni Document oluşmadı. Ardından ayrı insan web oturumu, gerçek CSRF+Origin formları ve alıcı kabul/ad işlemiyle signed doğrulandı. API credential iptali sonraki araç sorgusunu engelledi.
+
+**Sağlayıcı fake idi.** Bu kanıt gerçek modelin araç seçtiği veya canlı browser/Render demosu yapıldığı anlamına gelmez. Gerçek sağlayıcı tool metadatası, response usage, canlı belge durumu ve fatura sonucu ancak izinli sentetik gerçek denemeden sonra buraya eklenecek. Henüz böyle bir kayıt/video yok.
+
+### Testler, başarısız denemeler ve düzeltmeler
+
+| Adım | Gerçek sonuç |
+| --- | --- |
+| Test-first ilk çalıştırma | Yeni istemci modülü henüz olmadığından require/load hatası; testler başlamadı. Uygulama bundan sonra eklendi. |
+| İlk hedefli core/provider | 13 test / 78 assertion, 0 failure/error/skip. |
+| Job/secret kapsamı sonrası | 15 test / 86 assertion, 0 failure/error/skip. |
+| İlk handoff integration | 1 test / 15 assertion, başarılı; daha sonra tool/HTTP sırası için iki assertion eklendi. |
+| İlk RuboCop | Dört boş lambda aralık ihlali; düzeltildi. Observer eklenince çıkan bir aynı stil ihlali de düzeltildi. |
+| Tam SQLite son paketi | `bundle exec rails test`: **130 test, 1212 assertion, 0 failure, 0 error, 0 skip**. Eski testler korunuyor. |
+| Ayrı PostgreSQL 18 paketi | Agent credential/API + yeni handoff + iki bağlantılı concurrency: **20 test, 195 assertion, 0 failure/error/skip**. |
+| Son RuboCop | `bundle exec rubocop`: **92 dosya, 0 ihlal**. |
+| Zeitwerk | `bundle exec rails zeitwerk:check`: All is good! |
+| CLI ücret izni reddi | Subprocess testinde ücret izni olmadan çıkış 1; provider/token secret'ı çıktıda yok. Gerçek ağ/sağlayıcı çağrısı yapılmıyor. |
+
+Windows libvips opsiyonel DLL ve Rack literal string uyarıları görüldü; test sonuçlarıyla karıştırılmadı. Normal regresyon SQLite kaldı; yalnız ayrı boş loopback `signflow_agent_test` DB'sine eski beş migration uygulandı. Yeni uygulama migration'ı eklenmedi. Development'taki altı domain/agent tablosunun önce/sonra kayıt hash'leri aynı; mevcut veri silinmedi. Web Document modeli, authentication concern ve session initializer hash'leri değişmedi.
+
+### İnsan / agent zamanı ve karar
+
+İnsan aktif süre ve coding agent süresi güvenilir biçimde ölçülmedi: **bilinmiyor**. Üründeki gerçek LLM agent çalışmadı; fake test süreleri onun yerine yazılmadı. Komut süresi veya önceki projenin 1–2 saat beyanı yeni geliştirme zamanı sayılmadı.
+
+**Karar: kontrollü gerçek sentetik değerlendirmeyle devam.** Kod ve fake testler hazır; gerçek LLM erişimi/kalitesi ve 100 puanlık canlı kanıt henüz açık. İlerlemek için kullanıcı hesabında geçerli workspace key'i, model erişimi ve bütçe izni; ardından gerçek başarı/eksik bilgi/injection denemeleri ve web demosu gerekir. Kullanıcı credential UI'sı/API kotası eksikleri devam ediyor. Render Auto-Deploy/CI/canlı SHA/backup/flag doğrulanmadan push/deploy yok; bu çalışma yeni ücretli altyapı veya gerçek LLM çağrısı yapmadı.
+
+Son kontrol: yalnız bu çalışma için açılan yerel PostgreSQL cluster'ı kapatıldı; kayıt/dosya silinmedi. İlk prompt ve önceki Challenge metni aynen korunuyor; altı development tablosu hash karşılaştırması değişmedi. Son küçük provider wire normalizasyonundan sonra hedefli testler **16 test / 95 assertion, sıfır failure/error/skip** ile geçti. Bu ek test de gerçek modeli çağırmadı.

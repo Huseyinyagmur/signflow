@@ -87,10 +87,21 @@ bundle exec rubocop
 - Normal testler SQLite kalır. Ayrı PostgreSQL testi yalnız loopback ve `*_agent_test` DB'yi kabul eden `SIGNFLOW_AGENT_TEST_DATABASE_URL` ile açılır; production URL kullanmayın. Komut: `bundle exec rails test test/models/agent_credential_test.rb test/integration/agent_api_test.rb test/postgresql/agent_concurrency_test.rb`. Ayrı dump için `SCHEMA` ignored tmp dosyasına yönlendirilir.
 - Tam regresyon: `bundle exec rails test`; lint: `bundle exec rubocop`; autoload: `bundle exec rails zeitwerk:check`. `.github/workflows/ci.yml` ek agent_postgresql job'ını içerir; uzaktan çalışmadıkça başarılı raporlamayın.
 
+## SignFlow Agent — Aşama 2 (25.10.2026)
+
+- Kullanıcının yeni talebi, yalnız yerel Ruby LLM istemcisini ve testlerini yetkilendirir. Ücretli model çağrısı, commit, push ve Render deploy ayrıca yetkilendirilmiş değildir. Önceki aşamaların LLM yasağı bu istemci geliştirmesi için genişletilmiştir.
+- `script/signflow_agent.rb`, Rails'ten bağımsızdır. Yalnız get_template_version / create_draft / get_draft; shell, SQL, keyfi HTTP, cookie, CSRF veya send/sign aracı eklemeyin. `script/agent_demo_client.rb` deterministik istemci olarak kalır.
+- Rehberler: [docs/AGENT_LLM_STAGE2.md](docs/AGENT_LLM_STAGE2.md), [docs/AGENT_LLM_DEMO.md](docs/AGENT_LLM_DEMO.md). Gerçek model çağrısı yoksa LLM başarısı diye raporlamayın. Fake provider testleri model zekâsını kanıtlamaz.
+- Anthropic anahtarı yalnız sabit sağlayıcı transport'una, SignFlow anahtarı yalnız sabit API host'una gider; model bağlamına veya loga girmez. Env veya maskeli console girişi; gerçek `.env` ignored, `.env.example` yalnız isim/örnektir, otomatik yüklenmez.
+- Yeni LLM çalıştırması `SIGNFLOW_SYNTHETIC_DATA=true` ve kullanıcının ücret izni anlamına gelen `SIGNFLOW_ALLOW_PAID_LLM=true` ister; kodlama ajanı bunu gerçek ücretli deneme için kendiliğinden açmaz. Model erişimi hesapta preflight yapılmadan varsayılmaz.
+- Model alanları kullanıcı mesajına dayanmalı, ücret tam açık TL/TRY/₺ ifadesiyle korunmalı; eksik alanlar sorulur. Taslak öncesi yerel alan onayı ayrıca gerekir. Bu, doğru hukuki/semantik çıkarım garantisi değildir; web incelemesi/gönderimi korunur.
+- `tmp/llm-jobs` içindeki özel job kaydı secret içermez ama sentetik payload içerir. Kimlik/binding/key ve payload korunur; timeout sonrası aynı job ile `--resume` kullanılır. Yeni key üretmek/alanları değiştirerek sessiz retry yapmak yok. Resume deterministik API recovery'dir, yeni LLM çağrısı değildir.
+- Normal CI gerçek LLM'e erişmez; testlerde fake provider kullanılır. Kullanım: `bundle exec rails test`; PostgreSQL job'ı yeni handoff testini de kapsar. Canlı billing/usage ve Render kanıtını bu testlerden çıkarmayın.
+
 ## Genel kapsam sınırları
 
 - Mevcut Rails projesini silmeyin, yeniden üretmeyin veya kullanıcı dosyalarının üzerine topluca yazmayın.
 - Kullanıcı talebi olmadan db:drop / db:reset, force push, deploy veya GitHub'a push yapmayın.
-- Bu aşamada PDF, gerçek e-posta servisi, gelişmiş şablon iş akışları, yapay zekâ entegrasyonu, ödeme veya deploy eklemeyin. Temel değişkenli şablonlar ve sürüm geçmişi üçüncü aşamanın kapsamındadır.
+- PDF, gerçek e-posta servisi, gelişmiş şablon iş akışları, ödeme veya deploy eklemeyin. Yerel LLM istemcisi yalnız yukarıdaki Aşama 2 kurallarıyla sınırlıdır; gerçek ücretli çağrı ayrıca kullanıcı izni ister. Temel değişkenli şablonlar ve sürüm geçmişi korunur.
 - Yetkilendirmeyi istemciye bırakmayın; sahibin belge sorgularını global kapsamdan yapmayın.
 - Demo onayını hukuken nitelikli elektronik imza olarak sunmayın.

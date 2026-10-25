@@ -4,7 +4,14 @@ require "uri"
 
 # Deterministic API transport; this is NOT an LLM agent.
 module SignflowAgentHttp
-  class Error < StandardError; end
+  class Error < StandardError
+    attr_reader :status
+
+    def initialize(message, status: nil)
+      @status = status
+      super(message)
+    end
+  end
 
   class Client
     attr_reader :last_status
@@ -44,7 +51,7 @@ module SignflowAgentHttp
       http.max_retries = 0
       response = http.request(request)
       @last_status = response.code.to_i
-      raise Error, "unexpected_http_#{@last_status}" unless Array(expected).include?(@last_status)
+      raise Error.new("unexpected_http_#{@last_status}", status: @last_status) unless Array(expected).include?(@last_status)
       raise Error, "invalid_response" unless response["content-type"].to_s.start_with?("application/json") && response.body.bytesize <= 200_000
 
       JSON.parse(response.body)

@@ -136,4 +136,4 @@ jobs:
       - name: Apply migrations to isolated PostgreSQL test database
         run: bundle exec rails db:migrate
       - name: Agent API and concurrent database requests
-        run: bundle exec rails test test/models/agent_credential_test.rb test/integration/agent_api_test.rb test/postgresql/agent_concurrency_test.rb
+        run: bundle exec rails test test/models/agent_credential_test.rb test/integration/agent_api_test.rb test/integration/llm_agent_handoff_test.rb test/postgresql/agent_concurrency_test.rb
