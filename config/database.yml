@@ -18,7 +18,18 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
+<% if ENV["SIGNFLOW_AGENT_TEST_DATABASE_URL"].to_s != "" %>
+<% require "uri" %>
+<% agent_test_uri = URI.parse(ENV.fetch("SIGNFLOW_AGENT_TEST_DATABASE_URL")) %>
+<% unless ["postgres", "postgresql"].include?(agent_test_uri.scheme) && ["localhost", "127.0.0.1"].include?(agent_test_uri.host) && agent_test_uri.path.match?(/\A\/[a-z0-9_]+_agent_test\z/) %>
+<% raise "Agent PostgreSQL checks require a loopback *_agent_test database" %>
+<% end %>
+  adapter: postgresql
+  url: <%= ENV.fetch("SIGNFLOW_AGENT_TEST_DATABASE_URL") %>
+  pool: 5
+<% else %>
   database: storage/test.sqlite3
+<% end %>
 
 # Render supplies a persistent PostgreSQL database. Never fall back to local SQLite.
 production:

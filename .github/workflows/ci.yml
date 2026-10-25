@@ -106,3 +106,34 @@ jobs:
 
       - name: Run Minitest
         run: bundle exec rails test
+
+  agent_postgresql:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: signflow_agent
+          POSTGRES_PASSWORD: local-ci-only
+          POSTGRES_DB: signflow_agent_test
+        ports: [ '5432:5432' ]
+        options: >-
+          --health-cmd "pg_isready -U signflow_agent -d signflow_agent_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # Disposable CI database credentials, not an application/API secret.
+      SIGNFLOW_AGENT_TEST_DATABASE_URL: postgresql://signflow_agent:local-ci-only@127.0.0.1:5432/signflow_agent_test
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y build-essential pkg-config libsqlite3-dev libpq-dev libvips-dev
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4.11'
+          bundler-cache: true
+      - name: Apply migrations to isolated PostgreSQL test database
+        run: bundle exec rails db:migrate
+      - name: Agent API and concurrent database requests
+        run: bundle exec rails test test/models/agent_credential_test.rb test/integration/agent_api_test.rb test/postgresql/agent_concurrency_test.rb

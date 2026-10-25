@@ -29,6 +29,12 @@ Build asset/Tailwind derler; start migration sonrası Puma başlatır. Gerekli g
 sorun giderme adımları: [Render rehberi](docs/RENDER_DEPLOYMENT.md).
 Otomatik kaynak oluşturan render.yaml yoktur. Rehberde kalıcılık için önerilen ücretli PostgreSQL ile kullanıcının ödev demosunda seçtiğini bildirdiği süreli Free PostgreSQL birbirinden farklıdır; ücretsiz veritabanı süresiz saklama garantisi değildir.
 
+## SignFlow Agent — güvenli API (25.10.2026)
+
+Yerel Aşama 1: kullanıcıya ait sabit şablon sürümünden idempotent taslak oluşturma/sorgulama API'si eklendi. `AGENT_API_ENABLED=true` olmadıkça kapalıdır; agent için gönderim/imza endpoint'i yoktur. Mevcut web oturumu ve CSRF koruması korunur. `script/agent_demo_client.rb` gerçek HTTP davranışını denetleyen **deterministik istemcidir; LLM agent değildir**. LLM entegrasyonu sonraki aşamadadır; Render'a deploy yapılmadı.
+
+Endpoint, kimlik teslimi/iptali, gerçek yerel testler ve sınırlamalar: [Aşama 1 rehberi](docs/AGENT_API_STAGE1.md). [Challenge kaydı](CHALLENGE_LOG.md), [ilk plan](docs/AGENT_FIRST_IMPLEMENTATION_PLAN.md).
+
 ## Araştırma yöntemi ve kanıt sınırı
 
 Araştırma/erişim tarihi **17.10.2026**; kapsam **2026 ABD Fortune 500**. Global 500 ve Europe 500 verileri bu listeye karıştırılmaz. Dış veriler kaynaklarıyla, yerel sayımlar ölçüm etiketiyle, kullanıcı bilgileri beyan etiketiyle, varsayımlar tahmin etiketiyle gösterilir. Erişim tarihi, finansal verinin ölçüm tarihi değildir. Dinamik şirket profilleri sonradan değişebilir. Doğrudan erişilemeyen veya tüm listeyi kapsamayan kanıttan kesin minimum çıkarılmaz; eksikler [teslim kontrol tablosunda](#ödev-teslim-kontrol-tablosu) açık kalır.

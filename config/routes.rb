@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  namespace :api do
+    namespace :v1 do
+      get "templates/:template_id/versions/:id", to: "template_versions#show"
+      resources :drafts, only: %i[create show]
+    end
+  end
   root "pages#home"
   resource :session, only: %i[new create show destroy]
   resource :registration, only: %i[new create]

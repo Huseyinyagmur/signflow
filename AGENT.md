@@ -76,7 +76,18 @@ bundle exec rubocop
 - script/check_render_production.rb yalnızca ayrı loopback *_production_check PostgreSQL DB'sinde production runner ile çalışır; deneme kayıtları ekler. Canlı DB'de çalıştırmayın. Komut/ortam ayrıntıları rehberdedir.
 - /up yalnızca boot sağlığıdır. Gerçek browser/JS/TLS, restart sonrası kalıcılık ve backup geri yükleme deploy sonrası ayrıca doğrulanır. Yerel başarı uzaktaki başarı değildir. Migration rollback otomatik yapılmaz; backup ve eski/yeni sürüm uyumluluğu değerlendirilir.
 
-## Yapılmaması gerekenler
+## SignFlow Agent — Aşama 1 (25.10.2026)
+
+- Kullanıcının onayladığı yeni kapsam dar bearer API'dir; LLM/ücretli servis/Render deploy bu aşamaya dahil değildir. Önceki AI kapsam yasağı gerçek LLM için sürer.
+- Rehber: [docs/AGENT_API_STAGE1.md](docs/AGENT_API_STAGE1.md). `AGENT_API_ENABLED` tam olarak `true` değilse API 404 döner. Web oturumu, CSRF/origin ve mevcut geçiş kuralları değiştirilmez.
+- API `ActionController::API` tabanında cookie'den kullanıcı üretmez; send/sign/edit endpoint'i eklemeyin. Kullanıcı sahipliği Templates::Manage ve Documents::Manage üzerinden sınırlandırılır; yalnız AgentRequest ile ilişkilendirilmiş belgeler okunur.
+- AgentCredential 32 rastgele baytlı token'ın yalnız SHA-256 özetini saklar; varsayılan 7 gün, azami 30 gün; iptal geri alınmaz. Kimlik ve süre kayıt sonrası değişmez. Ham token konsol çıktısı/parametre/URL/log/model context'ine girmez.
+- AgentRequest + Document aynı kullanıcı kilidi/transaction içindedir; owner/operation/key digest benzersiz DB index'i korunur. Aynı payload replay; farklı payload 409. İdempotency kayıtlarını otomatik silmeyin. Ağ hatasında aynı key ve aynı payload ile tekrar deneyin; yeni key mükerrer iş oluşturabilir.
+- `script/agent_demo_client.rb` deterministik HTTP smoke istemcisidir, LLM agent değildir. Provisioning aracı `script/issue_agent_credential.rb` yalnız operatör içindir; token'ı gitignored tmp dosyasına özel olarak teslim eder. Windows'ta NTFS ACL ayrıca kontrol edilir; POSIX 0600 tek başına Windows izin garantisi değildir.
+- Normal testler SQLite kalır. Ayrı PostgreSQL testi yalnız loopback ve `*_agent_test` DB'yi kabul eden `SIGNFLOW_AGENT_TEST_DATABASE_URL` ile açılır; production URL kullanmayın. Komut: `bundle exec rails test test/models/agent_credential_test.rb test/integration/agent_api_test.rb test/postgresql/agent_concurrency_test.rb`. Ayrı dump için `SCHEMA` ignored tmp dosyasına yönlendirilir.
+- Tam regresyon: `bundle exec rails test`; lint: `bundle exec rubocop`; autoload: `bundle exec rails zeitwerk:check`. `.github/workflows/ci.yml` ek agent_postgresql job'ını içerir; uzaktan çalışmadıkça başarılı raporlamayın.
+
+## Genel kapsam sınırları
 
 - Mevcut Rails projesini silmeyin, yeniden üretmeyin veya kullanıcı dosyalarının üzerine topluca yazmayın.
 - Kullanıcı talebi olmadan db:drop / db:reset, force push, deploy veya GitHub'a push yapmayın.

@@ -10,7 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_14_000400) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_000100) do
+  create_table "agent_credentials", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "label", null: false
+    t.string "token_digest", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token_digest"], name: "index_agent_credentials_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_agent_credentials_on_user_id"
+  end
+
+  create_table "agent_requests", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "agent_credential_id", null: false
+    t.integer "document_id", null: false
+    t.string "operation", default: "create_draft", null: false
+    t.string "idempotency_key_digest", null: false
+    t.string "payload_digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agent_credential_id"], name: "index_agent_requests_on_agent_credential_id"
+    t.index ["document_id"], name: "index_agent_requests_on_document_id", unique: true
+    t.index ["user_id", "operation", "idempotency_key_digest"], name: "index_agent_requests_on_owner_operation_key", unique: true
+    t.index ["user_id"], name: "index_agent_requests_on_user_id"
+    t.check_constraint "operation = 'create_draft'", name: "agent_requests_valid_operation"
+  end
+
   create_table "documents", force: :cascade do |t|
     t.string "title", null: false
     t.text "content", null: false
@@ -65,6 +93,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_14_000400) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "agent_credentials", "users"
+  add_foreign_key "agent_requests", "agent_credentials"
+  add_foreign_key "agent_requests", "documents"
+  add_foreign_key "agent_requests", "users"
   add_foreign_key "documents", "template_versions"
   add_foreign_key "documents", "users"
   add_foreign_key "template_versions", "templates"
