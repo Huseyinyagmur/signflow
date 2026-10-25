@@ -1,5 +1,7 @@
 # SignFlow
 
+**25.10.2026 ödev finali:** [3–5 dakikalık canlı fark gösterimi](docs/FINAL_DEMO_100_POINTS.md) · [Challenge final kabul/kanıt denetimi](CHALLENGE_LOG.md#final-canlı-kabul-ve-ödev-kanıtları--25102026). Yerel gerçek model kabulü, canlı kullanıcı beyanı ve CI ayrı kapsamlarla kayıtlıdır; bağımsız production LLM uçtan uca kanıtı henüz tamamlandı sayılmaz.
+
 **SignFlow AI (25.10.2026):** Kullanıcı gerçek Gemini ile yerel web talebi → eksik bilgi diyaloğu → şablon taslağı → insan gönderimi → gizli sekmede alıcı imzası → İmzalandı akışını tamamladığını bildirdi. **Kullanıcı beyanıdır; Codex otomatik testi veya production kanıtı değildir.** Model değişikliği sonrası başarı bildirildi; model ID/token/maliyet bilinmiyor. Son otomatik regresyon **190 test / 1978 assertion**, ayrı PostgreSQL **59 / 813**, hata yok. Feature flag varsayılan kapalıdır. [Final kanıt/yayın raporu](docs/AI_FINAL_RELEASE_REPORT.md), [teknik rapor](docs/AI_CONTRACT_WEB_REPORT.md), [güvenli demo](docs/AI_CONTRACT_WEB_DEMO.md). Aşağıdaki aşama kayıtlarının “gerçek çağrı yapılmadı” ifadeleri ilgili geliştirme oturumunun tarihsel sonucudur; yeni kullanıcı beyanı üsttedir.
 
 [![CI](https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml)

@@ -441,3 +441,48 @@ Ek CI hazırlığı: `bundle exec ruby bin/bundler-audit` **No vulnerabilities f
 Kullanıcı bu gönderim görevi sırasında Render Settings'i yeniden kontrol ederek **“Şimdi kontrol ettim: main / Auto-Deploy Off”** yanıtını verdi. Bu güncel kullanıcı teyididir; eski teyit veya Codex Dashboard erişimi gibi sunulmaz. Koşul sağlandığı için kontrollerden sonra `fix: initialize AI contract templates for new users` mesajıyla yerel commit ve normal main push yetkilidir. Yeni SHA/Actions sonucu yalnız gerçekten oluşturulup sorgulandıktan sonra son yanıtta bildirilir; bu kayıt henüz uzak CI başarısı iddia etmez.
 
 Commit kapsamı yalnız bu iyileştirmenin servis/controller/view/route/test/CI/AGENT/rapor/Challenge dosyalarıdır; `.env`, token/credentials, log/tmp, dump/veritabanı veya production kayıtları alınmaz. Secret kontrolünde değerler yazdırılmaz. İlk prompt ve tarihsel metin korunur. Production'a bağlanma, gerçek Gemini çağrısı, API key okuma, Render deploy, veri silme/sıfırlama yoktur. İnsan/agent süresi veya yeni model maliyeti ölçülmedi. Sonraki yayın için ayrıca backup/restore ve hedef SHA/CI kontrolü, Auto-Deploy Off ve kullanıcı onaylı manuel deploy gerekir; toplu db:seed/backfill çalıştırılmaz.
+
+## Final Canlı Kabul ve Ödev Kanıtları — 25.10.2026
+
+**Gösterilecek fark:** doğal dilde talep → gerçek Gemini'nin alan/araç seçimi ve eksik bilgi diyaloğu → sabit TemplateVersion'dan güvenilir önizleme → insan onayıyla Document draft. Gönderim ve demo imza insan/alıcı kontrolünde kalır. Önceki SaaS'ın tamamını yeniden anlatmak yerine bu fark gösterilir. [3–5 dakikalık kesin sunum sırası ve teknik sorular](docs/FINAL_DEMO_100_POINTS.md).
+
+| Hoca başlığı | Denetim sonucu / eksik |
+| --- | --- |
+| Başlangıç ve gerçek önceki commit | Önceki uygulama temeli `fb78d61` (19.10.2026). Takvim olarak önceki hafta 12–18 Ekim deniyorsa son commit `207901b` (17.10.2026); iki kapsam karıştırılmaz. Tam SHA'lar üstte ve Git geçmişinde var. |
+| Kullanıcı problemi/kaynak | README ve Acı ve kaynak bölümlerinde eski TrustRadius/Capterra bağlamı ve erişim sınırları var. Yeni AI ihtiyacı için bağımsız kullanıcı görüşmesi, yaygınlık veya ölçülmüş zaman kazancı yok. |
+| Continue/Pivot/Kill | **Continue:** mevcut güvenilir şablon/imza servislerini yeniden kullanıp tekrar eden veri girişini doğal dille kolaylaştırmak; gönderim yetkisini modelden uzak tutmak. Bu teknik/ürün gerekçesi ölçülmüş pazar doğrulaması değildir. |
+| Bu haftanın ürün vaadi | Dar yetkili LLM ile kullanıcıya ait sabit sürümden taslak, tekrar isteğinde tek kayıt ve insan gönderim sınırı. Production uçtan uca LLM gösterimi ayrıca bekliyor. |
+| Yapılanlar/kanıt | Model adaptörü, Runner/Tools, session web akışı, renderer/önizleme/onay, idempotency ve başlangıç şablonları; kod, test raporları, gerçek commit ve CI bağlantıları mevcut. |
+| İnsan/coding agent zamanı | Başlık var; yeni hafta için gerçek aktif süreler ölçülmedi. CI süresi veya önceki projenin 1–2 saat beyanı bu haftanın insan/agent süresi yerine yazılmaz. |
+| İlk prompt | Tam metin üstteki kod bloğunda korunuyor. Önceki Aşama 1 kaydı Markdown bağlantılarının düz URL/satır sonu normalizasyonunu açıklıyor; orijinal arayüz biçiminin byte-birebir olduğu iddia edilmiyor. Bu denetimde prompt yeniden yazılmadı. |
+| Başarısızlıklar/sınırlar | invalid_model_response, 404, crass CI hatası ve şablonsuz yeni hesap regresyonu tarihsel kayıtta var. Tek süreç/bellek, free/fatura, gerçek kimlik/e-imza ve araştırma sınırları korunuyor. |
+| Güncel commit/CI | Son uygulama SHA `27dd021a5c0403a229b09679a9657f585988aa93`; aşağıdaki yeni SHA'ya bağlı CI tekrar sorgulandı. |
+
+**Kanıt kapsamları birbirinin yerine geçmez:**
+
+| Kapsam | 25.10.2026 itibarıyla kayıt |
+| --- | --- |
+| Yerel gerçek model kabulü | Kullanıcı beyanı: doğal dil → eksik alanlar → gerçek draft → insan gönderimi → gizli sekmede alıcı imzası → İmzalandı tamamlandı. Codex bağımsız browser testi değil. |
+| Canlı UI erişimi | Kullanıcı beyanı: Gemini web özelliği Render'a dağıtıldı; AI ekranı ve şablon seçimi görüldü. Bu tek başına canlı model çağrısı değildir. |
+| Yeni kullanıcı canlı düzeltmesi | Bu final talebinde kullanıcı canlıda başlangıç şablonu sorununun düzeldiğini bildirdi. Bağımsız production testi, canlı SHA veya model uçtan uca kabulü sayılmadı. |
+| Otomatik yerel regresyon | Önceki gönderim oturumunda gerçekten çalıştırılan Rails **197/2111**, ayrı PG **86/1226**, 0 failure/error/skip; RuboCop 126 dosya temiz, Zeitwerk/Tailwind başarılı. Model testleri fake; bu belge denetiminde paket yeniden çalıştırılmadı. |
+| GitHub CI | `cd8919f` ve `27dd021` için aşağıdaki run'larda scan_ruby, scan_js, lint, test, agent_postgresql success; public API ile bu denetimde yeniden doğrulandı. |
+| Bağımsız canlı LLM uçtan uca kabulü | **Henüz kanıtlanmadı.** Production'da yeni gerçek model → Document akışı bu denetimde çalıştırılmadı. Canlı kabul için öğrencinin sentetik sunum denemesi gerekir. |
+
+| Gerçek commit | Fark / gerçek CI bağlantısı |
+| --- | --- |
+| [fb78d61](https://github.com/Huseyinyagmur/signflow/commit/fb78d6111ebfb8863b3fa344d62a5f4484bc2fa4) | Önceki uygulama başlangıcı; yeni AI başarısı değildir. |
+| [d0e7479](https://github.com/Huseyinyagmur/signflow/commit/d0e747978b13ec55f5cc9edae2c723c4d4fe910b) | Dar yetkili Agent API ve idempotency. |
+| [7878ea9](https://github.com/Huseyinyagmur/signflow/commit/7878ea949b75c3bd80f295bd82ca7ed43ee071a5) | Güvenli araç çağrılı LLM istemcisi. |
+| [a0c5243](https://github.com/Huseyinyagmur/signflow/commit/a0c52436538ae90a4d80ab21807fe9dd7e8c7609) | Credential yönetimi ve API kotası. |
+| [0b088dd](https://github.com/Huseyinyagmur/signflow/commit/0b088dd789a2ed4aa764fb8a99dc42cc11982d60) | Gemini web entegrasyonu; [ilk CI **failure**](https://github.com/Huseyinyagmur/signflow/actions/runs/40177476290), gem audit/crass nedeniyle. Aynı SHA'daki Dependabot başarıları bu CI'ın yerine geçirilmez. |
+| [cd8919f](https://github.com/Huseyinyagmur/signflow/commit/cd8919f3e1273629b46a1ba711ee2e7ecf794948) | crass güvenlik güncellemesi; [beş CI işi **success**](https://github.com/Huseyinyagmur/signflow/actions/runs/40177690107). |
+| [27dd021](https://github.com/Huseyinyagmur/signflow/commit/27dd021a5c0403a229b09679a9657f585988aa93) | Yeni kullanıcı başlangıç şablonları; [beş CI işi **success**](https://github.com/Huseyinyagmur/signflow/actions/runs/40181904712). |
+
+Render bilgisi coding agent'a [AGENT.md](AGENT.md), [README](README.md), [deploy rehberi](docs/RENDER_DEPLOYMENT.md), build/start betikleri, Puma/database ayarları ve kullanıcı talimatlarından geldi; hesap ayarları koddan kendiliğinden öğrenilmez. PostgreSQL migration start betiğinde Puma'dan önce çalışır; yeni kullanıcı düzeltmesi yeni migration veya toplu seed istemez. WEB_CONCURRENCY=0 süreç içi konuşma/kotayı tek süreçte tutar. Auto-Deploy kullanıcı tarafından Off teyit edildi; bu geçmiş teyit her gelecek yayın için yeniden kontrol edilmelidir.
+
+**Güncel backup/restore kanıtı — kullanıcı terminal çıktısı, 25.10.2026:** kullanıcı gerçek Render production yedeğini `signflow-20261025-115841.dump` (21.039 byte, PostgreSQL custom) olarak aldı; pg_dump ve pg_restore --list başarılı. Ayrı yerel **signflow_restore_test** veritabanında `pg_restore --single-transaction --exit-on-error` hatasız tamamlandı ve **altı tablo** geri yüklendi. Bildirilen sayılar: **1 user, 8 documents, 3 templates, 7 template_versions**; documents durumları **2 draft, 6 signed**. Diğer iki tablonun adları/sayıları bildirilmedi, tahmin edilmedi. Bu sonuçlar kullanıcının sağladığı terminal kanıtıdır; Codex'in bağımsız çalıştırdığı veya dump dosyasını açarak doğruladığı testler değildir. Başarılı yerel DB restore'u **uygulama seviyesinde tam felaket kurtarma testi** anlamına gelmez. Önceki aşamalardaki “restore henüz yapılmadı” kayıtları o anın tarihsel durumudur; bu güncel kanıt onları tamamlar. Model ID, token, gerçek maliyet, aktif insan/coding-agent süreleri ve canlı deploy SHA'sı bağımsız doğrulanmadı; dump/secret açılmadı.
+
+**85 için:** istenen başlıklar, gerekçeli Continue ve teknik/CI kanıtları mevcut; bilinmeyen ölçümler açık. **100 için ek kapı:** gerçek Gemini'nin canlı URL üzerinde eksikleri saptayıp insan onaylı taslağa katkısı sunumda gösterilmeli; mevcut UI/CI ve yerel kullanıcı beyanı bunun yerine konmaz. Puan veya canlı başarı garantisi verilmez.
+
+Bu final denetimin ilk oturumunda yalnız dokümantasyon ve salt okunur Git/CI/kod kontrolleri yapıldı. Canlı ana sayfa web aracı ve anonim HTTP GET ile doğrulanamadı; bu erişim sonucu uygulamanın kapalı olduğunun kanıtı değildir. O oturumda production veritabanına bağlanılmadı/yazılmadı, gerçek Gemini çağrısı, özellik/kod değişikliği veya commit/push/deploy yapılmadı. Sonraki belge teslimi ayrı kullanıcı talebiyle yetkilendirildi; restore kanıtı bu talepte sağlanan yeni terminal sonuçlarıyla yukarıda güncellendi. Kullanıcı bu teslim için Settings'i yeniden kontrol edip **“Şimdi doğruladım: main / Auto-Deploy Off”** yanıtını verdi; bu kullanıcı teyididir, bağımsız Dashboard incelemesi değildir. Yalnız CHALLENGE_LOG, README ve demo rehberi teslim kapsamındadır. Gerçek belge commit SHA'sı/push/Actions sonucu işlem sonrasında son yanıtta bildirilir; uygulama testleri bu belge tesliminde yeniden çalıştırılmış sayılmaz ve Render deploy başlatılmaz.
