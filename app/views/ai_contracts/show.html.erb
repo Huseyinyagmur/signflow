@@ -1,0 +1,37 @@
+<% content_for :title, "AI ile Sözleşme Oluştur" %>
+<div class="page-heading"><div><h1>AI ile Sözleşme Oluştur</h1><p>Önce bilgileri tamamlayın. Taslak oluşturma ve gönderim sizin kontrolünüzde.</p></div><%= link_to "Yeni konuşma", new_ai_contract_path, class: "btn btn-secondary" %></div>
+<% if @error %><div class="notice notice-error" role="alert"><%= @error %></div><% end %>
+<% if @snapshot[:failed] && !@error %><div class="notice notice-error" role="alert">Bu konuşma durduruldu. Yeniden ücretli istek göndermemek için otomatik tekrar yapılmaz. Yeni konuşma başlatabilirsiniz.</div><% end %>
+<div class="grid items-start gap-6 xl:grid-cols-2">
+  <section class="panel overflow-hidden"><div class="panel-heading"><h2 class="font-semibold">Gemini ile hazırlayın</h2><span class="badge badge-draft">Sentetik demo</span></div>
+    <div class="space-y-4 p-6" aria-live="polite">
+      <% if @snapshot[:messages].empty? %><p class="text-sm leading-7 text-slate-500">Nasıl bir sözleşme istiyorsunuz? Alıcı, hizmet, açık TL tutarı ve tarihleri belirtin. Eksik bilgiler sorulacak. Hizmet tarihlerini YYYY-MM-DD, son imza tarihini saat dilimiyle ISO8601 biçiminde yazın.</p><% end %>
+      <% @snapshot[:messages].each do |message| %><div class="rounded-2xl p-4 <%= message[:role] == :user ? 'bg-slate-100' : 'bg-teal-50' %>"><p class="mb-2 text-xs font-semibold text-slate-500"><%= message[:role] == :user ? 'Siz' : 'Gemini · doğrulanan alanlar' %></p><p class="whitespace-pre-wrap break-words text-sm leading-7"><%= message[:text] %></p></div><% end %>
+    </div>
+    <% unless @snapshot[:failed] || @preview || @conversation.document_id %>
+      <%= form_with url: message_ai_contract_path(@conversation), data: { turbo: false, controller: "ai-message", action: "submit->ai-message#submit" }, class: "border-t border-slate-100 p-6" do |form| %>
+        <%= hidden_field_tag :step, @snapshot[:step] %>
+        <%= label_tag :prompt, "Mesajınız" %><%= text_area_tag :prompt, nil, rows: 5, maxlength: 8000, required: true, placeholder: "Ahmet için 25 bin TL tutarında Web demo sözleşmesi hazırla…" %>
+        <div class="mt-4 flex items-center gap-4"><%= form.submit "Mesaj gönder", class: "btn btn-primary", data: { ai_message_target: "button" } %><span hidden data-ai-message-target="loading" role="status" class="text-sm text-slate-500">Gemini yanıtı bekleniyor…</span></div>
+      <% end %>
+    <% end %>
+  </section>
+  <aside class="space-y-5">
+    <section class="panel p-6"><h2 class="font-semibold"><%= @version.title %></h2><p class="hint">Sabit sürüm v<%= @version.number %> · Kaynak #<%= @version.id %></p>
+      <% fields = @snapshot.dig(:result, :fields) || [] %>
+      <div data-missing class="mt-5 text-sm"><strong>Eksik alanlar</strong><p class="mt-2 text-slate-500"><%= fields.any? ? fields.map { |field| SignflowAgent::Tools::FIELD_LABELS.fetch(field) }.join(', ') : (@preview ? 'Tüm gerekli alanlar doğrulandı.' : 'Talebinizden sonra belirlenecek.') %></p></div>
+    </section>
+    <% if @preview %>
+      <section class="panel p-6"><h2 class="mb-5 font-semibold">Çıkarılan bilgiler</h2><dl class="space-y-3 text-sm"><% (@snapshot[:result][:payload]["values"].merge(@snapshot[:result][:payload]["document"].except("title"))).each do |field, value| %><div><dt class="text-slate-500"><%= SignflowAgent::Tools::FIELD_LABELS.fetch(field) %></dt><dd class="mt-1 break-words font-medium"><%= value %></dd></div><% end %></dl></section>
+      <section class="panel p-6"><h2 class="mb-5 font-semibold">Sözleşme önizlemesi</h2><p id="contract-preview" class="contract-text"><%= @preview.content %></p></section>
+    <% end %>
+    <section class="panel p-6">
+      <% if @conversation.document_id %>
+        <%= link_to "Oluşturulan taslağı aç", document_path(@conversation.document_id), class: "btn btn-primary w-full" %>
+      <% else %>
+        <%= button_to "Taslağı Oluştur", draft_ai_contract_path(@conversation), disabled: !@preview || @snapshot[:failed], class: "btn btn-primary w-full disabled:opacity-40", form: { data: { turbo: false } } %>
+      <% end %>
+      <p class="hint mt-4">Bu onay yalnız taslak kaydeder. Belgeyi inceleyip düzenleyebilir, ardından kendiniz imzaya gönderebilirsiniz. Nitelikli elektronik imza veya hukuki danışmanlık sağlanmaz.</p>
+    </section>
+  </aside>
+</div>

@@ -184,7 +184,7 @@ class SignflowAgentTest < ActiveSupport::TestCase
   end
 
   test "CLI refuses provider use before reading keys when paid permission is absent" do
-    env = { "SIGNFLOW_SYNTHETIC_DATA" => "true", "SIGNFLOW_ALLOW_PAID_LLM" => "false",
+    env = { "SIGNFLOW_LLM_PROVIDER" => "anthropic", "SIGNFLOW_SYNTHETIC_DATA" => "true", "SIGNFLOW_ALLOW_PAID_LLM" => "false",
       "SIGNFLOW_TEMPLATE_ID" => "1", "SIGNFLOW_TEMPLATE_VERSION_ID" => "2", "SIGNFLOW_BASE_URL" => "https://example.com",
       "ANTHROPIC_API_KEY" => "fake-do-not-print-provider-key", "SIGNFLOW_API_TOKEN" => "fake-do-not-print-api-token" }
     stdout, stderr, status = Open3.capture3(env, RbConfig.ruby, Rails.root.join("script/signflow_agent.rb").to_s, "--job", "blocked-#{SecureRandom.hex(5)}")

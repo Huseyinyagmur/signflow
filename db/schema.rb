@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_25_000100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_000200) do
   create_table "agent_credentials", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "label", null: false
@@ -37,6 +37,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_000100) do
     t.index ["user_id", "operation", "idempotency_key_digest"], name: "index_agent_requests_on_owner_operation_key", unique: true
     t.index ["user_id"], name: "index_agent_requests_on_user_id"
     t.check_constraint "operation = 'create_draft'", name: "agent_requests_valid_operation"
+  end
+
+  create_table "ai_contract_conversations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "template_version_id", null: false
+    t.integer "document_id"
+    t.string "public_id", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_id"], name: "index_ai_contract_conversations_on_document_id", unique: true
+    t.index ["public_id"], name: "index_ai_contract_conversations_on_public_id", unique: true
+    t.index ["template_version_id"], name: "index_ai_contract_conversations_on_template_version_id"
+    t.index ["user_id"], name: "index_ai_contract_conversations_on_user_id"
   end
 
   create_table "documents", force: :cascade do |t|
@@ -97,6 +111,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_000100) do
   add_foreign_key "agent_requests", "agent_credentials"
   add_foreign_key "agent_requests", "documents"
   add_foreign_key "agent_requests", "users"
+  add_foreign_key "ai_contract_conversations", "documents"
+  add_foreign_key "ai_contract_conversations", "template_versions"
+  add_foreign_key "ai_contract_conversations", "users"
   add_foreign_key "documents", "template_versions"
   add_foreign_key "documents", "users"
   add_foreign_key "template_versions", "templates"

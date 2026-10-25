@@ -1,5 +1,7 @@
 # SignFlow Agent — kontrollü Render yayını kontrol listesi
 
+**Güncel AI web yayını:** Aşağıdaki metin önceki Aşama 3 hazırlığının tarihsel listesidir. Yeni additive conversation migration'ı, Gemini backend env, tek süreç kısıtı ve kullanıcı onay kapıları için [final yayın raporunu](AI_FINAL_RELEASE_REPORT.md) kullanın. Yeni görev yerel commit'i yetkilendirir; Auto-Deploy doğrulanmadan push, ayrıca son kullanıcı onayı olmadan deploy yapılmaz.
+
 **25.10.2026: hazırlık belgesi. Dashboard'a erişilmedi; hiçbir hesap ayarı, canlı SHA, plan, Auto-Deploy veya backup doğrulanmadı. Deploy/push yapılmadı.** Kutular kullanıcı/operatör tarafından gerçek kontrolden sonra işaretlenir. [Temel Render rehberi](RENDER_DEPLOYMENT.md).
 
 ## Yetki ve canlı durum — henüz doğrulanmadı

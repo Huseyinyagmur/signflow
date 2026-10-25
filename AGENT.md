@@ -92,7 +92,7 @@ bundle exec rubocop
 - Kullanıcının yeni talebi, yalnız yerel Ruby LLM istemcisini ve testlerini yetkilendirir. Ücretli model çağrısı, commit, push ve Render deploy ayrıca yetkilendirilmiş değildir. Önceki aşamaların LLM yasağı bu istemci geliştirmesi için genişletilmiştir.
 - `script/signflow_agent.rb`, Rails'ten bağımsızdır. Yalnız get_template_version / create_draft / get_draft; shell, SQL, keyfi HTTP, cookie, CSRF veya send/sign aracı eklemeyin. `script/agent_demo_client.rb` deterministik istemci olarak kalır.
 - Rehberler: [docs/AGENT_LLM_STAGE2.md](docs/AGENT_LLM_STAGE2.md), [docs/AGENT_LLM_DEMO.md](docs/AGENT_LLM_DEMO.md). Gerçek model çağrısı yoksa LLM başarısı diye raporlamayın. Fake provider testleri model zekâsını kanıtlamaz.
-- Anthropic anahtarı yalnız sabit sağlayıcı transport'una, SignFlow anahtarı yalnız sabit API host'una gider; model bağlamına veya loga girmez. Env veya maskeli console girişi; gerçek `.env` ignored, `.env.example` yalnız isim/örnektir, otomatik yüklenmez.
+- Anthropic anahtarı yalnız sabit sağlayıcı transport'una, SignFlow anahtarı yalnız sabit API host'una gider; model bağlamına veya loga girmez. Env veya maskeli console girişi; gerçek `.env` ignored, `.env.example` yalnız isim/örnektir, otomatik yüklenmez. Rails development artık development grubundaki dotenv-rails ile `.env` yükler; mevcut process ENV önceliklidir. Test/production yerel dotenv dosyası yüklemez; Render Environment Variables kullanır. Bağımsız Ruby CLI otomatik dotenv yüklemez. Gerçek `.env`/anahtar içeriğini incelemeyin veya loglamayın; testler yalnız geçici sentetik dosyalarda çalışmalıdır.
 - Yeni LLM çalıştırması `SIGNFLOW_SYNTHETIC_DATA=true` ve kullanıcının ücret izni anlamına gelen `SIGNFLOW_ALLOW_PAID_LLM=true` ister; kodlama ajanı bunu gerçek ücretli deneme için kendiliğinden açmaz. Model erişimi hesapta preflight yapılmadan varsayılmaz.
 - Model alanları kullanıcı mesajına dayanmalı, ücret tam açık TL/TRY/₺ ifadesiyle korunmalı; eksik alanlar sorulur. Taslak öncesi yerel alan onayı ayrıca gerekir. Bu, doğru hukuki/semantik çıkarım garantisi değildir; web incelemesi/gönderimi korunur.
 - `tmp/llm-jobs` içindeki özel job kaydı secret içermez ama sentetik payload içerir. Kimlik/binding/key ve payload korunur; timeout sonrası aynı job ile `--resume` kullanılır. Yeni key üretmek/alanları değiştirerek sessiz retry yapmak yok. Resume deterministik API recovery'dir, yeni LLM çağrısı değildir.
@@ -106,7 +106,24 @@ bundle exec rubocop
 - Rehberler: [docs/AGENT_STAGE3_REPORT.md](docs/AGENT_STAGE3_REPORT.md), [docs/REAL_LLM_QUICKSTART.md](docs/REAL_LLM_QUICKSTART.md), [docs/RENDER_AGENT_RELEASE_CHECKLIST.md](docs/RENDER_AGENT_RELEASE_CHECKLIST.md). Gerçek anahtar/LLM/Render API veya production işlemi, ücretli servis, commit/push/deploy bu görevde yoktur. Public doküman model kontrolünü hesap erişimi gibi sunmayın.
 - Test helper memory kotasını integration testleri arasında temizler; bu API'den erişilen bir reset endpoint'i değildir. PG CI job'ı UI/kota/iptal ve concurrency testlerini de kapsar; uzak sonucu çalışmadan başarılı göstermeyin.
 
-## Genel kapsam sınırları
+## Gemini sağlayıcısı (25.10.2026)
+
+- `SIGNFLOW_LLM_PROVIDER=gemini` açık model ID'si ister; belirtilmezse Anthropic varsayılanı sürer. Üç araç, Runner/Tools, EVET, web gönderimi, kota ve DB idempotency sınırları korunur. Gemini/Anthropic ortak system policy'si `llm/policy.rb` içindedir.
+- Gemini free varsayılanı gerçek free/billing-off proje teyidi için `SIGNFLOW_GEMINI_FREE_TIER_CONFIRMED=true` ister; uygulama Cloud Billing'i okuyamaz/ücretsiz-only isteği garanti edemez. Paid modunda ayrıca `SIGNFLOW_ALLOW_PAID_LLM=true` gerekir. Fallback/ücretli yükseltme yok. Kamuya açık free model allowlist'i hesap erişimi kanıtı değildir.
+- Gemini key yalnız `GEMINI_API_KEY` env veya maskeli giriş, sabit Google host'una x-goog-api-key header'ı; modele/loga/URL'ye/job'a yazılmaz. Model functionCall/Response ve opaque thoughtSignature'lar adaptörde dönüştürülür; Runner'a signature eklemeyin, iş kaydına/kanıt loguna koymayın.
+- Bu görevde gerçek ücretsiz/ücretli Gemini çağrısı da yasaktır; kullanıcı kendi terminalinde [docs/GEMINI_INTEGRATION.md](docs/GEMINI_INTEGRATION.md) rehberini uygular. Key aramayın/okumayın, fake testleri gerçek model başarısı diye sunmayın. Free tier'da gerçek müşteri/kişisel/gizli veri gönderilmez.
+
+## SignFlow AI web kapsamı (25.10.2026)
+
+- Kullanıcının yeni görevi mevcut yerel LLM istemcisini session doğrulamalı web arayüzüne genişletir; önceki CLI-only kapsam bu web geliştirmesi için genişletilmiştir. Gerçek model çağrısı/key arama veya okuma, production DB, commit/push/deploy yetkisi verilmez.
+- Rehberler: [web raporu](docs/AI_CONTRACT_WEB_REPORT.md), [güvenli demo](docs/AI_CONTRACT_WEB_DEMO.md). `AI_CONTRACTS_ENABLED` varsayılan kapalı; web bearer veya kendi API'sine HTTP istemez. Current_user/CSRF/origin kontrolleri korunur. AI send/sign endpoint'i eklemeyin.
+- Shared Runner/Tools/GeminiProvider/Manage/Renderer kullanılır. `Runner#advance` create_draft önerisinde yazmadan durur; web controller `confirm_proposal!` çağırmaz. Yalnız ayrı insan POST'u server-side öneriyi yeniden doğrulayarak `AiContracts::CreateDraft` ile kaydeder. Model/client payload'ını doğrudan yazmayın.
+- Konuşma DB receipt'i yalnız owner, sabit version, UUID/TTL ve document FK tutar; chat/model yanıtı/secret DB'ye konmaz. Receipt'leri otomatik silmeyin. Konuşma satır kilidi ve unique index'ler/transaction korunur. Mesaj step+digest replay'ini atlayıp yeniden model çağırmayın.
+- Diyalog/opaque signature durumu bellekte, mantıksal TTL bir saat, en fazla 64/süreç; eski girdiler sonraki start/state erişiminde temizlenir. Restart/reload/farklı worker durum kaybettirir; açık hata gerekir. DB receipt tamamlanmış belgeyi belleksiz kurtarır. Çok instance için ortak güvenli durum/kota tasarlanmadan bu demo ölçeklenmez.
+- Kullanıcı başına fixed 10 dakikada 5 start ve 24 provider işlemi; preflight ve başarısız çağrılar sayılır. Kota süreç bazlıdır; dolar/fatura üst sınırı değildir. Model/input/tool sınırları, sentetik veri ve free/paid izinleri korunur. Runtime secret yalnız backend'dedir; env dump/debug model logu yoktur.
+- Yeni testler tam `bundle exec rails test` ile çalışır. PG CI job'ı web integration/service ve `test/postgresql/ai_contract_concurrency_test.rb` içerir; yalnız loopback *_agent_test opt-in DB. Lint/zeitwerk:check/tailwindcss:build komutları korunur. Fake testleri gerçek Google/browser başarısı diye sunmayın.
+
+## Korunan genel kapsam sınırları
 
 - Mevcut Rails projesini silmeyin, yeniden üretmeyin veya kullanıcı dosyalarının üzerine topluca yazmayın.
 - Kullanıcı talebi olmadan db:drop / db:reset, force push, deploy veya GitHub'a push yapmayın.

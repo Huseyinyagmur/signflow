@@ -1,0 +1,17 @@
+<% content_for :title, "AI ile Sözleşme Oluştur" %>
+<div class="page-heading"><div><h1>AI ile Sözleşme Oluştur</h1><p>Talebinizi anlatın. Alanları birlikte tamamlayın, son kararı siz verin.</p></div><span class="badge badge-draft">Gemini · Sentetik demo</span></div>
+<% if @error %><div role="alert" class="notice notice-error"><%= @error %></div><% end %>
+<section class="panel mx-auto max-w-3xl p-6 md:p-8">
+  <h2 class="mb-3 text-xl font-semibold">Bir şablonla başlayın</h2>
+  <p class="mb-6 text-sm leading-7 text-slate-500">AI bilgileri çıkarır; sözleşme metni seçtiğiniz şablondan hazırlanır. Şablon sürümü konuşma boyunca sabit kalır. AI sözleşmenizi imzaya gönderemez.</p>
+  <% if @templates.empty? %>
+    <p class="mb-5">Önce kendi sözleşme şablonunuzu oluşturun.</p><%= link_to "Şablonlarım", templates_path, class: "btn btn-primary" %>
+  <% else %>
+    <%= form_with url: ai_contracts_path, data: { turbo: false } do |form| %>
+      <div class="field-group"><%= label_tag :template_version_id, "Sözleşme şablonu" %><%= select_tag :template_version_id, options_for_select(@templates.map { |template| [ "#{template.current_version.title} · v#{template.current_version.number}", template.current_version_id ] }), required: true %></div>
+      <label class="my-6 flex items-start gap-3 text-sm leading-6"><%= check_box_tag :synthetic, "1", false, required: true, class: "mt-1" %><span>Yalnız sentetik demo verisi kullanacağım. Mesajlar Google'a gönderilir; ücretsiz katmanda hizmet geliştirme ve insan incelemesine konu olabilir. Gerçek kişi, müşteri veya gizli veri girmeyeceğim.</span></label>
+      <%= form.submit "Konuşmayı başlat", class: "btn btn-primary" %>
+    <% end %>
+  <% end %>
+  <p class="hint mt-6">Konuşmaya bir saat erişebilirsiniz. Mesajlar yalnız sunucu belleğinde tutulur; süre dolduktan sonraki temizlikte kaldırılır. Sunucu yeniden başlarsa yeni konuşma gerekir. Oluşturulan taslaklar korunur.</p>
+</section>

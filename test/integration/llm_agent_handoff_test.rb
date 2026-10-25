@@ -44,7 +44,7 @@ class LlmAgentHandoffTest < ActionDispatch::IntegrationTest
     deadline = 1.hour.from_now.iso8601
     candidate = { "values" => { "hizmet" => "yazılım" }, "document" => { "recipient_name" => "Ahmet", "recipient_email" => "ahmet@example.com", "expires_at" => deadline } }
     tools = SignflowAgent::Tools.new(api: ApiBridge.new(open_session, token), job: job, secrets: [ token ])
-    runner = SignflowAgent::Runner.new(provider: ScriptedProvider.new(candidate), tools: tools)
+    runner = SignflowAgent::Runner.new(provider: build_provider(candidate), tools: tools)
     assert_difference([ "Document.count", "AgentRequest.count" ], 1) do
       @result = runner.run(input: "Ahmet ahmet@example.com yazılım #{deadline}", ask: ->(_) { flunk }, confirm: ->(_) { true })
     end
@@ -86,6 +86,10 @@ class LlmAgentHandoffTest < ActionDispatch::IntegrationTest
   end
 
   private
+
+  def build_provider(candidate)
+    ScriptedProvider.new(candidate)
+  end
 
   def csrf(action, client = self)
     Nokogiri::HTML(client.response.body).at_css("form[action='#{action}'] input[name='authenticity_token']")["value"]

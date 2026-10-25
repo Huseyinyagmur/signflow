@@ -6,6 +6,10 @@ Rails.application.routes.draw do
     end
   end
   root "pages#home"
+  resources :ai_contracts, only: %i[new create show] do
+    post :message, on: :member
+    post :draft, on: :member
+  end
   resource :session, only: %i[new create show destroy]
   resource :registration, only: %i[new create]
   resources :agent_credentials, only: %i[index create] do

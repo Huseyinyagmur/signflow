@@ -1,5 +1,7 @@
 # SignFlow
 
+**SignFlow AI (25.10.2026):** Kullanıcı gerçek Gemini ile yerel web talebi → eksik bilgi diyaloğu → şablon taslağı → insan gönderimi → gizli sekmede alıcı imzası → İmzalandı akışını tamamladığını bildirdi. **Kullanıcı beyanıdır; Codex otomatik testi veya production kanıtı değildir.** Model değişikliği sonrası başarı bildirildi; model ID/token/maliyet bilinmiyor. Son otomatik regresyon **190 test / 1978 assertion**, ayrı PostgreSQL **59 / 813**, hata yok. Feature flag varsayılan kapalıdır. [Final kanıt/yayın raporu](docs/AI_FINAL_RELEASE_REPORT.md), [teknik rapor](docs/AI_CONTRACT_WEB_REPORT.md), [güvenli demo](docs/AI_CONTRACT_WEB_DEMO.md). Aşağıdaki aşama kayıtlarının “gerçek çağrı yapılmadı” ifadeleri ilgili geliştirme oturumunun tarihsel sonucudur; yeni kullanıcı beyanı üsttedir.
+
 [![CI](https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/Huseyinyagmur/signflow/actions/workflows/ci.yml)
 
 **Canlı uygulama:** [signflow-k2tg.onrender.com](https://signflow-k2tg.onrender.com/) · **GitHub:** [Huseyinyagmur/signflow](https://github.com/Huseyinyagmur/signflow)
@@ -38,6 +40,8 @@ Endpoint, kimlik teslimi/iptali, gerçek yerel testler ve sınırlamalar: [Aşam
 **Aşama 2 — yerel LLM istemcisi:** `script/signflow_agent.rb`, Anthropic Messages API adaptörü, üç izinli araç, eksik alan diyaloğu, alan onayı ve kalıcı idempotent iş kurtarma içerir. **Gerçek sağlayıcı çağrısı henüz yapılmadı**; model çıkarım kalitesi ve hesap erişimi doğrulanmadı. Anahtar/bütçe izni olmadan çağrı yapılmaz. Testler fake provider ile çalışır; bu sonuçlar canlı LLM kanıtı değildir. [Teknik rapor](docs/AGENT_LLM_STAGE2.md) · [Güvenli canlı demo rehberi](docs/AGENT_LLM_DEMO.md).
 
 **Aşama 3 hazırlığı:** Oturum/CSRF korumalı **Agent erişimi** ekranı (`/agent_credentials`) ile oluşturma, listeleme ve iptal eklendi; token yalnız ilk POST yanıtında gösterilir. API credential başına 60 saniyede 60 okuma/10 POST ile sınırlıdır; process-memory kota restart/eviction'da sıfırlanır, çok instance için ortak sınır değildir. [Gerçek yerel sonuçlar](docs/AGENT_STAGE3_REPORT.md) · [Kısa LLM kurulum rehberi](docs/REAL_LLM_QUICKSTART.md) · [Render yayın kontrol listesi](docs/RENDER_AGENT_RELEASE_CHECKLIST.md). Gerçek LLM/Render denemesi yapılmadı.
+
+**Gemini sağlayıcısı:** Anthropic korunarak `SIGNFLOW_LLM_PROVIDER=gemini` ve açık `SIGNFLOW_LLM_MODEL` seçimi eklendi. Gemini free modu proje/billing teyidi ister; hesapta ücretsiz erişim otomatik doğrulanmaz. Gerçek ücretli/ücretsiz model çağrısı bu geliştirmede yapılmadı. [Gemini protokolü, free veri koşulları, testler ve güvenli çalıştırma komutları](docs/GEMINI_INTEGRATION.md).
 
 ## Araştırma yöntemi ve kanıt sınırı
 

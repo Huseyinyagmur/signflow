@@ -1,6 +1,6 @@
 # SignFlow Agent — Challenge Log
 
-**Başlangıç tarihi:** 25.10.2026. **Güncel durum:** Güvenli Agent API ve Ruby LLM istemcisi geliştirildi; istemci fake provider ile test edildi. Gerçek LLM çağrısı henüz yapılmadı. [Geliştirme planı](docs/AGENT_FIRST_IMPLEMENTATION_PLAN.md), [gerçek Aşama 1 kaydı](#aşama-1--gerçek-geliştirme-ve-kanıt-25102026). Aşağıdaki eski bölümler tarihsel kayıttır; güncel hazırlık Aşama 3 ekinde yer alır.
+**Başlangıç tarihi:** 25.10.2026. **Güncel durum:** Güvenli API, Ruby LLM istemcisi ve AI web taslak akışı geliştirildi. Kullanıcı 25.10.2026'da gerçek Gemini ile yerel web talebi → eksik bilgi diyaloğu → taslak → insan gönderimi → alıcı imzası → İmzalandı akışını başarıyla tamamladığını bildirdi. Bu kullanıcı beyanıdır; Codex'in otomatik/bağımsız tarayıcı veya production doğrulaması değildir. Son fake-provider regresyonları ve yayın kapıları [final raporda](docs/AI_FINAL_RELEASE_REPORT.md); [ilk plan](docs/AGENT_FIRST_IMPLEMENTATION_PLAN.md), [Aşama 1](#aşama-1--gerçek-geliştirme-ve-kanıt-25102026), [web geliştirme raporu](docs/AI_CONTRACT_WEB_REPORT.md). Aşağıdaki önceki bölümler tarihsel kayıttır.
 
 ## Başlangıç noktası
 
@@ -264,3 +264,140 @@ Gerçek Models/Messages çağrısı **0**; gerçek anahtar istenmedi/okunmadı/k
 İnsan ve coding agent süresi ölçülmedi: **bilinmiyor**. Gerçek LLM denemesi için kullanıcı kendi hesabında güvenli anahtar girişi, bütçe izni ve sentetik veriyle preflight/deneme yapmalı. Legacy erişimi, gerçek çıktı kalitesi ve canlı imzalama demosu hâlâ bekliyor; 100 puan koşulunun sağlandığı iddia edilmiyor.
 
 Son denetim: yalnız bu iş için açılan `tmp/agent-stage3/postgres-data` cluster'ı kapatıldı, dosyaları/kayıtları silinmedi. İlk prompt SHA-256 aynı; eski tarihsel metin üst durum satırı hariç birebir korunuyor. Development'taki users/documents/templates/template_versions/agent_credentials/agent_requests satır hash'leri değişmedi. Yeni belge bağlantıları ve Markdown code fence'leri kontrol edildi; yerel bozuk bağlantı bulunmadı.
+
+## Gemini sağlayıcısı — yerel entegrasyon, gerçek çağrı yok (25.10.2026)
+
+Başlangıç yerel SHA: `a0c52436538ae90a4d80ab21807fe9dd7e8c7609`, `feat: add agent credential management and API rate limiting`. Yeni değişiklikler commit edilmedi. Kullanıcının bu görevde ücretsiz çağrıyı da yasaklaması nedeniyle Google/Anthropic model API'sine **hiç gerçek çağrı yapılmadı**, key aranmadı/okunmadı/kullanılmadı. Eski ilk prompt ve tarihsel kayıtlar korunuyor.
+
+### Yapılanlar
+
+- Gemini REST adaptörü, `SIGNFLOW_LLM_PROVIDER=gemini`, zorunlu açık Gemini model ID'si, ücretsiz/ücretli izin ayrımı. Anthropic varsayılanı/ücret izni duruyor; system prompt metni değiştirilmeden ortak Policy modülüne taşındı ve eski metinle karşılaştırıldı.
+- Gemini functionCall → Runner tool_use ve tool_result → functionResponse. Opaque thought signature'lar yalnız adaptör belleğinde, raw parts/sıra korunarak geri gönderilir; log/job/Runner'a çıkarılmaz. Üç araç dışı/bozuk/blocked/truncated yanıt ve değiştirilmiş history reddedilir.
+- Free modda explicit proje/tier onayı; paid modda ayrıca paid izin. Model/sağlayıcı/anahtar/endpoint fallback yok. URL'de key yok; x-goog-api-key header; maskeli giriş/env. Google key biçimi de source/secret guard'ına eklendi.
+- Yeni dosyalar: `script/support/llm/{gemini_provider,provider_config,policy}.rb`, `test/lib/{gemini_provider_test,provider_config_test}.rb`, `test/support/gemini_transport.rb`, `test/integration/gemini_agent_handoff_test.rb`, [docs/GEMINI_INTEGRATION.md](docs/GEMINI_INTEGRATION.md).
+- Güncellenenler: CLI/aggregator/Anthropic policy alias, `.env.example`, eski handoff ve CLI test helper'ları, CI PG job'ı, README ve AGENT. Runner/Tools/job ve API/web güvenlik kuralları değişmedi. Yeni gem/migration yok.
+
+### Model ve free tier kanıt sınırı
+
+25.10.2026 [resmî 2.5 model sayfası](https://ai.google.dev/gemini-api/docs/models/gemini-2.5-flash) erişimin geçmiş aktif kullanıcılara sınırlandığını belirtti; yeni API key sahibi için 2.5 erişimi garanti edilmedi. [3.5 Flash-Lite](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite) function calling destekli güncel alternatif olarak değerlendirildi; [fiyat tablosunda](https://ai.google.dev/gemini-api/docs/pricing) free tier input/output ücretsiz listeleniyor. Yeni proje için önerilen aday budur; seçimi kullanıcı `SIGNFLOW_LLM_MODEL` ile yapar. Hesabın erişimi/kotası/billing durumu doğrulanmadı.
+
+Free kontrol bayrağı kullanıcının AI Studio'da doğru projenin billing-off/free durumunu kontrol ettiği beyanıdır; istemci billing okuyamaz ve free-only fatura garantisi vermez. 3.5 Flash-Lite / 2.5 Flash standard paid metin fiyatı $0,30 input / $2,50 output (1M token); free ve paid karıştırılmaz. [Unpaid koşullarda](https://ai.google.dev/gemini-api/terms) içerik geliştirme/insan incelemesine konu olabilir; kişisel/gizli veri gönderilmez. Bölge/billing istisnaları kullanıcı tarafından ayrıca kontrol edilir.
+
+Gerçekte çalıştırılmış Gemini modeli yok; modeller yalnız fake transport fixture'larında kullanıldı. Gerçek input/output/usage ölçümü yok, bu çalışmanın gerçek model çağrı gideri 0 $; hesap/fatura incelenmedi. Kullanıcı komutları ve koşullar entegrasyon belgesindedir; bu çalışma sırasında çalıştırılmadı.
+
+### Gerçek test kaydı
+
+| Kontrol | Sonuç |
+| --- | --- |
+| İlk test-first Gemini koşusu | 6 test / 2 assertion, 2 failure, 4 error; henüz GeminiProvider yoktu. |
+| İlk adaptör/core/Anthropic paketi | 22 test / 159 assertion, hata yok. |
+| Genişletilmiş hedefli ara paket | 28 test / 206 assertion, sıfır failure/error/skip. Sonra generation-timeout aynı-body retry testi eklendi. |
+| Tam `bundle exec rails test` | **152 test / 1501 assertion, 0 failure/error/skip**. |
+| Ayrı PostgreSQL 18 | **31 test / 404 assertion, 0 failure/error/skip**. Concurrency, UI/kota, eski ve fake Gemini handoff → insan CSRF → signed dahil. |
+| `bundle exec rubocop` | **105 dosya, 0 ihlal**. Ek testteki bir tek tırnak stil ihlali düzeltildi. |
+| `bundle exec rails zeitwerk:check` | All is good! |
+
+Fake Gemini protokolüyle eksik bilgi, uydurulmuş e-posta reddi, mevcut ücret/tarih guard'ları, bilinmeyen araç, malformed/blocked/truncated JSON, 401/403/404/429/timeout, aynı generation body ile retry, kalıcı job resume, raw signature/wire ID dönüşümü ve secret sızıntısı kontrolleri test edildi. Fake sağlayıcı + gerçek Rails stack'i model zekâsının veya canlı LLM demosunun kanıtı değildir. Uzak Actions/Render/browser/Google hesap denemesi yapılmadı. Windows opsiyonel libvips/Rack uyarıları görüldü.
+
+### Süre ve karar
+
+İnsan ve coding-agent süreleri ölçülmedi: **bilinmiyor**. Devam kararı, kullanıcının kendi ücretsiz proje/billing teyidi ve sentetik gerçek denemesine bağlı. Gerçek doğal dil kalitesi ve hesap erişimi açık. Ücretli servis, production DB değişikliği, commit/push/deploy yapılmadı.
+
+Son kontrol ilk prompt hash'inin, önceki Challenge içeriğinin ve altı development tablosunun satır hash'lerinin korunduğunu doğruladı. Ayrı yerel PostgreSQL test cluster'ı kapatıldı, dosyaları/kayıtları silinmedi. Belge bağlantıları/code fence'leri ve diff whitespace kontrolü geçti.
+
+## SignFlow AI — web arayüzü (25.10.2026)
+
+### Bu haftanın vaadi ve yapılanlar
+
+SignFlow AI, kullanıcının doğal dilde verdiği talebi gerçek bir LLM ile analiz ederek mevcut sürümlü sözleşme şablonlarından taslak hazırlamayı ve kritik gönderim kararını insana bırakmayı hedefler. Web arayüzü ve backend geliştirildi; bu çalışmada gerçek model/manuel tarayıcı/Render testi yapılmadı. Fake test sonuçları gerçek model zekâsı veya canlı demo kanıtı olarak sunulmaz.
+
+Session/CSRF korumalı `/ai_contracts/new` şablon seçimi, kullanıcıya ait sabit TemplateVersion, diyalog/eksik alanlar, güvenilir kayıtsız önizleme ve ayrı **Taslağı Oluştur** POST'u eklendi. Ortak Runner/GeminiProvider/Tools/Manage/Renderer kullanılır; iç bearer/self-HTTP yoktur. Model önerisi yazma yetkisi değildir. Gönderim ve imza mevcut insan/alıcı akışında kalır. `AI_CONTRACTS_ENABLED` varsayılan kapalıdır.
+
+Yeni conversation tablosu yalnız owner/version/UUID/TTL/document receipt saklar; konuşmalar/model çıktıları/anahtar DB'ye yazılmaz. Diyalog en fazla 64 konuşma/süreç belleğinde; bir saat mantıksal TTL, erişimde temizlik, restart/reload'da kayıp açıkça belirtilir. Aynı step+mesaj replay model çağırmaz; farklı mesaj 409. Taslak transaction/satır kilidi/unique index ile tekilleştirilir. Kullanıcı kotası 10 dakikada 5 start/24 provider işlemi; tek süreç sınırı, fatura garantisi olmaması ve senkron timeout/proxy riskleri belgelenmiştir.
+
+Dosya envanteri, sınırlar, hata analizi ve gerçek sonuçlar: [AI_CONTRACT_WEB_REPORT](docs/AI_CONTRACT_WEB_REPORT.md). Maskeli anahtar girişi, environment ve sentetik canlı deneme adımları: [AI_CONTRACT_WEB_DEMO](docs/AI_CONTRACT_WEB_DEMO.md). README/AGENT/env örneği/PG CI hedefleri güncellendi. Commit oluşturulmadığından yeni commit bağlantısı yoktur; başlangıç HEAD önceki `a0c52436538ae90a4d80ab21807fe9dd7e8c7609` kaydıdır.
+
+### Önceki gerçek Gemini hatası ve başarısız yerel testler
+
+Kullanıcı beyanı: önceki gerçek CLI denemesinde model erişimi ve get_template_version HTTP 200 başarılı, ardından invalid_model_response. Gerçek ham yanıt veya secret aranmadı. HEAD'teki eski Runner, sentetik manifest → fenced soru JSON'unda aynı **invalid_model_response** hatasını verdi; bu somut parser yolu doğrulandı, gerçek olayın kesin aynı yoldan geldiği kanıtlanmadı. Yeni Runner fenced/split soru metnini normalize eder; prose yanıt için bir bounded JSON onarımı, devam ederse güvenli özel hata üretir. Signature/functionResponse akışı fake Gemini protokol testleriyle korunur; STOP dışı/bozuk yanıtlar reddedilir. Ham response/signature/key loglanmaz.
+
+Test-first Runner başlangıcı 3 test/1 assertion: 1 failure/2 error (advance eksik). Web başlangıcı 5 test/4 assertion: 5 error (rotalar eksik). İlk uygulamada test yardımcısı `message`, Minitest yöntemiyle çakıştı: 5 error; `post_message` ile düzeltildi. Sonraki hedefli pakette `ReadOnlyAttributeError` yanlış constant'ı 1 error verdi; Rails'in `ReadonlyAttributeError` adı kullanıldı. RuboCop'ta bir trailing newline düzeltildi. CSRF veya başka güvenlik kontrolü kapatılmadı.
+
+Son test yardımcısı gerçek hidden form token'larına geçirilince tam pakette 2 failure görüldü: farklı action'ın per-form token'ı yabancı taslak POST'unda 404 sahiplik denetimine ulaşmadan 422 üretti. Bu özel sahiplik testinde aynı oturumun global meta token'ı kullanıldı; normal formlarda kendi hidden token'ı korunuyor. Testler tekrar çalıştırıldı; koruma gevşetilmedi.
+
+### Gerçek testler ve kanıt
+
+| Komut/kontrol | Sonuç |
+| --- | --- |
+| `bundle exec rails test` | **180 test / 1846 assertion; 0 failure/error/skip**, exit 0. |
+| İzole PostgreSQL 18 hedefli paket | **55 test / 739 assertion; 0 failure/error/skip**, exit 0. API concurrency ve iki bağımsız web onayı tek draft; belleksiz receipt recovery dahil. |
+| `bundle exec rubocop` | **120 dosya; ihlal yok**, exit 0. |
+| `bundle exec rails zeitwerk:check` | **All is good!**, exit 0. |
+| `bundle exec rails tailwindcss:build` | Başarılı, exit 0. |
+| Development/test/ayrı loopback PG `db:migrate` | Yeni tablo/FK/index'ler eklendi; eski kayıt silme/dönüştürme yok. |
+| Gerçek Gemini / manuel tarayıcı / Render / uzak Actions | **Yapılmadı; tamamlandı sayılmaz.** |
+
+Testler hem nötr fake provider hem gerçek Gemini adaptörü/fake transport ile eksik bilgi → escaped önizleme → insan onayı → gerçek Document draft → normal liste → insan gönderimi → alıcı signed akışını kapsar. Sahiplik, oturum, gerçek form token+origin, bearer izolasyonu, sentetik onay, grounding/tarih/tutar, bilinmeyen tool, secret/oversize, quota/TTL, mesaj replay/conflict ve çift onay test edildi. Windows opsiyonel libvips DLL/Rack uyarıları görüldü; başarısızlık gizlenmedi. Development'taki mevcut altı tablonun satır hash'leri aynı kaldı. Production'a bağlanılmadı.
+
+### Süre, gerçek LLM maliyeti ve karar
+
+İnsan/coding-agent süreleri ölçülmedi: bilinmiyor. Bu geliştirmede gerçek model çağrısı sıfır; gerçek token/usage/fatura ölçümü yok. Kullanıcının önceki gerçek CLI denemesinin maliyeti bilinmiyor. Ücretsiz katman uygunluğu ve hesabın erişimi kullanıcı tarafından teyit edilmelidir; free/paid izinleri ayrı, gerçek müşteri verisi yasak. Yeni ücretli servis, commit, push veya deploy yapılmadı.
+
+**Karar: devam**, koşullu gerçek sentetik model ve manuel web kabul testine geç. İş gerekçesi: çalışan sürümlü sözleşme/imza akışına daha kolay veri girişi eklemek, AI'ye gönderim/imza yetkisi vermeden taslak hazırlama işini azaltmak. Gerçek model kalitesi ve kullanım maliyeti ölçülmeden fayda kanıtlanmış değildir. Sunum: oturum → AI menüsü → kendi şablonu → eksik bilgi diyaloğu → alan/önizleme → Taslağı Oluştur → normal belge → insan gönderimi → alıcı demo imzası. Ayrıntılar demo rehberinde; bu son gerçek demo kullanıcıya kalan iştir.
+
+Son denetim: ilk prompt SHA-256 aynı ve önceki tarihsel metin birebir korundu (yalnız üst güncel durum satırı güncellendi). Yeni belge bağlantıları/code fence'leri, diff whitespace ve altı mevcut development tablosunun hash'leri kontrol edildi. Yalnız bu görev için açılan `tmp/ai-contract-web/postgres-data` cluster'ı kapatıldı; dosyaları/kayıtları silinmedi. Mevcut kullanıcı web sunucusu/production veritabanında işlem yapılmadı.
+
+## Son testler, kullanıcı demosu ve yayın hazırlığı — 25.10.2026
+
+### Başlangıç, acı ve continue kararı
+
+Önceki ürün; oturum, normal sözleşme, sürümlü metin şablonları, insan gönderimi ve demo imzaydı. Yerel başlangıç HEAD `a0c52436538ae90a4d80ab21807fe9dd7e8c7609`, branch `main`, remote `https://github.com/Huseyinyagmur/signflow.git`. Önceden commit edilmemiş Gemini/web/dotenv/tanılama çalışmaları korundu; bunlar yeni fark katmanının birbirine bağlı kapsamıdır. Veritabanı dosyaları, `.env`, loglar veya geçici kanıt dosyaları commit kapsamına alınmaz.
+
+**Continue:** Mevcut güvenilir şablon/imza sürecini kullanarak tekrar eden alan girişini doğal dille kolaylaştırmak, kritik gönderim kararını insanda tutmak. [Önceki TrustRadius kaynağı](https://www.trustradius.com/reviews/docusign-2021-05-20-15-48-31) şablon düzenleme ihtiyacına bağlam sağlar; [README](README.md#gerçek-kullanıcı-problemi-ve-çözümümüz) erişim/araştırma sınırlarını korur. Yeni AI/agent ihtiyacı için bağımsız müşteri görüşmesi, yaygınlık ölçümü veya zaman tasarrufu deneyi yapılmadı. Geliştiricinin manuel demosu müşteri araştırması değildir.
+
+### Bu haftanın vaadi ve farklılaştırıcı
+
+Gerçek LLM doğal dil talebini yorumlar, izinli araçları seçer, eksikleri sorar ve kullanıcıya ait sabit TemplateVersion için alan önerir. `get_template_version`, `create_draft`, `get_draft` ortak agent araçlarıdır. Web katmanında `create_draft` bir öneri olarak durur; Document yalnız session/CSRF korumalı **Taslağı Oluştur** onayıyla yazılır. Önizleme ve gerçek içerik Manage/Renderer ile şablondan gelir; serbest LLM hukuki metni kaydedilmez. Modelde send/sign yetkisi yoktur. Kullanıcı normal belge ekranında inceleyip gönderir, alıcı mevcut demo imzayı tamamlar. Anthropic ve dış bearer API/CLI işlevleri korunur.
+
+### Gerçek yerel demo — yalnız kullanıcı beyanı
+
+Kullanıcı 25.10.2026'da şu akışı yerel tarayıcıda tamamladığını bildirdi:
+
+1. Web üzerinden doğal dil sözleşme talebi girdi.
+2. Gemini'nin eksik bilgi sorularını yanıtladı.
+3. Şablondan gerçek taslak oluşturup SignFlow'da görüntüledi.
+4. Kendisi imzaya gönderip paylaşım bağlantısı oluşturdu.
+5. Gizli tarayıcı sekmesinde alıcı olarak demo imzaladı.
+6. Uygulamada **İmzalandı** durumunu gördü.
+
+Önceki `gemini_http_404` sonrasında model yapılandırmasını değiştirerek başarılı oldu. Başarılı modelin ID'si bildirilmedi; tahmin edilmedi veya `.env`/secret aranmadı. Bu kayıt otomatik test, Codex tarafından bağımsız server/browser doğrulaması, Google faturası veya production başarısı değildir. Yeni gerçek Gemini çağrısı yapılmadı.
+
+### Testler, başarısızlık ve düzeltme
+
+Mevcut tekrar onayı/sürüm/sahiplik/CSRF/grounding/API/CLI/imza testleri incelendi. Var olan pozitif akışa sahte browser owner/status/content/version parametrelerinin dikkate alınmadığı ve yenilemede belge bağlantısının gösterildiği kontroller eklendi. İki yeni test (nötr fake ve Gemini wire ile tekrar çalışır), tüm oturumsuz POST'ları ve modelin imza aracı/secret sızıntısı girişimini kapsar. Gereksiz yeni iş kuralı/ürün özelliği yazılmadı.
+
+İlk hedefli çalışma **22 test / 344 assertion, 2 failure** verdi: oturumsuz istek Authentication tarafından session reset edildiğinde eski global CSRF token'ı sonraki istekte 422 üretiyordu. Her bağımsız anonim istek öncesinde güncel token alındı; uygulama koruması değiştirilmedi. Önceki `invalid_model_response`, `gemini_http_404` ve test fixture başarısızlıklarının tarihsel kayıtları korunur.
+
+| Son gerçek kontrol | Sonuç |
+| --- | --- |
+| `RAILS_ENV=test` / `bundle exec rails test` | **190 test / 1978 assertion; 0 failure/error/skip**, exit 0. |
+| İzole PostgreSQL 18 API/web/concurrency paketi | **59 test / 813 assertion; 0 failure/error/skip**, exit 0. |
+| `bundle exec rubocop` | **123 dosya; ihlal yok**, exit 0. |
+| `bundle exec rails zeitwerk:check` (test ortamı) | **All is good!**, exit 0. |
+| `bundle exec rails tailwindcss:build` (test ortamı) | Başarılı, exit 0. |
+
+PostgreSQL yalnız `127.0.0.1:55443/signflow_agent_test` izole test veritabanıdır; yeni dump ignored `tmp/ai-final` altındadır. İki bağımsız bağlantının aynı konuşma onayında tek belge commit etmesi ve bellek kaybı sonrası receipt recovery tekrar geçti. Production bağlantısı, kullanıcı/belge oluşturma veya migration yapılmadı. Windows opsiyonel libvips DLL ve Rack uyarıları test hatası üretmedi.
+
+### Git kanıtı ve kontrollü yayın
+
+Bu final görevi yerel AI commit'ini yetkilendirir; önceki commit yasağının bu görev için yerini alır. Commit SHA gerçek oluşturma sonrasında son raporda ve `git log -1` ile bildirilir; aynı commit'in kendi içeriğine kendine referans veren SHA uydurulmaz. Önceki API/LLM/credential commit'leri gerçek Git geçmişinde yukarıda kayıtlıdır. Push yalnız Render bağlı branch/Auto-Deploy durumu doğrulanırsa yapılabilir.
+
+25.10.2026 public GitHub Actions okumasında [39549285447](https://github.com/Huseyinyagmur/signflow/actions/runs/39549285447) dahil görülen başarılar eski **`fb78d6111ebfb8863b3fa344d62a5f4484bc2fa4`** SHA'sına aittir. Bunlar yeni AI commit'inin CI kanıtı değildir. Doğrudan GitHub/Render connector ve kullanılabilir browser oturumu bulunmadı; Render Auto-Deploy/branch/backup/DB/environment ayarları doğrulanmadı. Bu durumda kullanıcının açık push koşulu nedeniyle push yapılmaz, production deploy başlatılmaz.
+
+### Sınırlar, süre, maliyet ve sonraki adım
+
+İnsan ve coding-agent süreleri ölçülmedi: **bilinmiyor**. Gerçek yerel LLM demo süresi, model ID, token sayıları, fatura/maliyet ve araştırma ölçümleri bildirilmedi; sayı uydurulmadı. Free teyit bayrağı ücretsiz fatura garantisi değildir. Konuşma/kota tek süreçlidir; çok worker/instance ortak durum desteği yoktur. TTL/restart konuşmayı kaybettirebilir; belge/idempotency receipt PostgreSQL'de kalır. Senkron model çağrısı proxy timeout/thread riski taşır. Gerçek kişi/müşteri verisi gönderilmez; nitelikli imza veya hukuki görüş iddiası yoktur.
+
+Production öncesi bağlı branch ve Auto-Deploy Off, kurtarılabilir backup/restore, mevcut kalıcı PostgreSQL, additive migration, tek süreç/instance, backend-only environment ve production projesinde model/free/billing erişimi ayrıca doğrulanmalı. `.env` production'da yüklenmez. Ayrı son kullanıcı deploy onayı gerekir. [Final rapor ve checklist](docs/AI_FINAL_RELEASE_REPORT.md) bu açık kapıları ve değişken isimlerini listeler.
+
+Commit öncesi açık kapsam denetimi: ilgili 51 kaynak/belge dosyasında Google/Anthropic/GitHub/agent token, private key, literal imza token'ı ve sentetik olmayan e-posta desenleri değerler yazdırılmadan tarandı; şüpheli eşleşme bulunmadı. Bu tarama mutlak gizli veri/DLP garantisi değildir. `.env` ignored ve izlenmiyor; storage/log/tmp/credentials stage kapsamı dışında. İlk prompt hash'i, önceki tarihsel metin, yerel Markdown link/fence kontrolleri ve `git diff --check` geçti. Remote main public API'de `fb78d6111ebfb8863b3fa344d62a5f4484bc2fa4` olarak doğrulandı; üç yerel öncül agent commit'i henüz uzakta görünmüyor. Yeni commit'in gerçek SHA'sı oluşturma sonrasında son yanıtta verilir; Auto-Deploy doğrulanmadıkça push yapılmaz.

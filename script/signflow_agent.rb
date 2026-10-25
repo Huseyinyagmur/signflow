@@ -23,21 +23,19 @@ begin
   if !options[:resume] && job.data["payload"]
     raise SignflowAgent::Error, "existing_payload_use_resume"
   end
-  if !options[:resume] && ENV["SIGNFLOW_ALLOW_PAID_LLM"] != "true"
-    raise SignflowAgent::Error, "paid_calls_not_authorized"
-  end
+  config = options[:resume] ? nil : SignflowAgent::ProviderConfig.new
+  config&.check_consent!
   token = SignflowAgent::Secrets.read("SIGNFLOW_API_TOKEN")
   api = SignflowAgentHttp::Client.new(base_url: base, token: token,
     allow_loopback_http: ENV["SIGNFLOW_ALLOW_LOOPBACK_HTTP"] == "true")
-  provider_key = options[:resume] ? nil : SignflowAgent::Secrets.read("ANTHROPIC_API_KEY")
+  provider_key = options[:resume] ? nil : SignflowAgent::Secrets.read(config.secret_name)
   tools = SignflowAgent::Tools.new(api: api, job: job, secrets: [ token, provider_key ].compact,
     observer: ->(event) { puts JSON.generate(event) })
   if options[:resume]
     result = tools.resume
     summary = { mode: "deterministic_job_recovery_not_new_llm_call", model_calls: 0 }
   else
-    provider = SignflowAgent::AnthropicProvider.new(api_key: provider_key, paid_allowed: true,
-      model: ENV.fetch("SIGNFLOW_LLM_MODEL", SignflowAgent::AnthropicProvider::DEFAULT_MODEL))
+    provider = config.build(api_key: provider_key)
     provider.verify_model!
     puts "Model erişimi doğrulandı. Yalnız sentetik veri girin; parola/anahtar girmeyin."
     print "Sözleşme talebi: "
@@ -54,7 +52,7 @@ begin
         print "Alanlar doğru mu? Taslak oluşturmak için EVET yazın (imzaya göndermez): "
         STDIN.gets&.strip == "EVET"
       end)
-    summary = { mode: "real_provider", model: provider.model, model_calls: runner.model_calls,
+    summary = { mode: "real_provider", provider: config.name, configured_tier: config.tier, model: provider.model, model_calls: runner.model_calls,
       message_http_attempts: provider.message_attempts, successful_response_usage: runner.usage }
   end
   puts JSON.generate(summary.merge(tools: tools.events, document: result))
