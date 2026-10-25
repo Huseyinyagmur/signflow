@@ -11,10 +11,12 @@ class RegistrationsController < ApplicationController
 
   def create
     @user = User.new(params.require(:user).permit(:name, :email, :password, :password_confirmation))
-    if @user.save
-      redirect_to new_session_path, notice: "Hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.", status: :see_other
-    else
-      render :new, status: :unprocessable_entity
-    end
+    Users::Register.call(user: @user)
+    redirect_to new_session_path, notice: "Hesabınız oluşturuldu. Üç başlangıç şablonunuz hazır. Şimdi giriş yapabilirsiniz.", status: :see_other
+  rescue ActiveRecord::RecordInvalid
+    render :new, status: :unprocessable_entity
+  rescue Users::Register::TemplateSetupFailed
+    @user.errors.add(:base, "Başlangıç şablonları hazırlanamadığı için hesabınız oluşturulmadı. Lütfen tekrar deneyin.")
+    render :new, status: :unprocessable_entity
   end
 end

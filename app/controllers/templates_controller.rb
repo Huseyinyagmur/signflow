@@ -46,6 +46,9 @@ class TemplatesController < ApplicationController
       "#{created_count} demo şablonu eklendi. Mevcut şablonlarınız korunuyor."
     end
     redirect_to templates_path, status: :see_other, notice: notice
+  rescue Templates::DemoSeeder::IncompleteTemplate
+    redirect_to templates_path, status: :see_other,
+      alert: "Mevcut başlangıç şablonlarından birinin sürümü eksik. Şablonlarınız değiştirilmedi; kendi şablonunuzu oluşturabilir veya destek isteyebilirsiniz."
   end
 
   private

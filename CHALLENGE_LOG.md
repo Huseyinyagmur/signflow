@@ -413,3 +413,31 @@ Gerçek AI commit'i [0b088dd789a2ed4aa764fb8a99dc42cc11982d60](https://github.co
 `bundle update crass --conservative` ile yalnız lockfile'daki **crass 1.0.7 → 1.0.8** değişti. Gerçek tekrar kontrolleri: Rails **190 test / 1978 assertion, 0 failure/error/skip**; RuboCop **123 dosya/0 ihlal**; bundler-audit **No vulnerabilities found**, exit 0; Brakeman **Errors 0 / Security Warnings 0**, exit 0. Windows'ta Brakeman Ractor/fork/forwardable tanılama mesajları da görüldü; son scanner raporu ve exit kodu ayrıca kontrol edildi. Ruby/Rails sürümü, uygulama iş kuralları ve güvenlik ayarları değiştirilmedi.
 
 Güvenlik düzeltmesi ayrı commit/push olarak hazırlanıyor; yeni SHA için CI sonucu ancak gerçek run tamamlandıktan sonra son yanıtta bildirilir. Bu paragraf sonraki run'ı başarılı varsaymaz. Kullanıcı Auto-Deploy Off teyidi, production backup/restore/env/model erişiminin doğrulandığı veya deploy yetkisi verildiği anlamına gelmez.
+
+## Yeni kullanıcı başlangıç şablonları — geliştirme ve gönderim kontrolü (25.10.2026)
+
+Başlangıç HEAD `cd8919f3e1273629b46a1ba711ee2e7ecf794948`, branch `main`, origin `https://github.com/Huseyinyagmur/signflow.git`. Önceki Gemini/crass çalışmasının üzerine yeni kayıt iyileştirmesi hazırlanıyor. [Geliştirme raporu](docs/NEW_USER_AI_TEMPLATES.md) dosya listesi, ilk başarısız testler ve deployment sınırlarını içerir; önceki tarihsel kayıtlar değiştirilmedi.
+
+**Yerelde yeniden üretilen neden:** kayıt controller'ı yalnız kullanıcıyı kaydediyordu; temiz hesapta başlangıç şablonu sayısı 0 kalıyordu. AI sayfası doğru şekilde yalnız current_user şablonlarını listeliyor, boş olduğunda konuşma formu göstermiyordu. Production hesabı incelenmedi; canlıdaki hatanın tek nedeninin bu olduğu iddia edilmedi. Authentication veya template ownership gevşetilmedi.
+
+**Değişiklik:** `Users::Register` yeni kullanıcı + mevcut `Templates::DemoSeeder` kurulumunu aynı transaction'a alır. Yazılım Geliştirme, Gizlilik ve Danışmanlık şablonları her kullanıcı için ayrı Template/TemplateVersion olarak oluşur. Şablon hatasında hesap ve tüm set geri alınır; yarım başarı/oturum verilmez. User callback'i ve mevcut hesaplara otomatik backfill yoktur. Eski şablonsuz hesap açık CSRF/session korumalı `/ai_contracts/prepare_templates` POST'u ile başlangıç setini ekleyebilir; GET yazma yapmaz. Mevcut düzenlemeler/sürümler korunur. Mevcut seed kaydının geçerli sürümü eksikse üzerine yazılmaz veya hazır denmez; güvenli hata ve kendi şablonunu oluşturma yolu sunulur.
+
+**İdempotency:** kullanıcı satır kilidi, transaction ve mevcut user_id/seed_key unique index'i korunur. Tekrarda yeni set yok; PostgreSQL'de iki bağlantı aynı kullanıcı için yarıştığında sonuçlar 3 ve 0, toplam üç şablon/üç sürümdür. AI taslağı için mevcut sabit sürüm, kota, insan onayı ve gönderim/imza sınırı değişmez.
+
+İlk geliştirme testleri 6/21 ile 4 failure/2 error verdi; başlangıç seti ve recovery yokluğu görüldü. Sonradan eksik sürüm testi 7/127 ile 1 failure verdi; seeder'ın kullanılamayan kaydı atlayıp kısmi set ekleyebilmesi düzeltildi. Bu başarısızlıklar raporda korunuyor. Gönderim hazırlığında tüm kontroller **yeniden** çalıştırıldı:
+
+| Kontrol | Gerçek sonuç |
+| --- | --- |
+| `RAILS_ENV=test` / `bundle exec rails test` | **197 test / 2111 assertion; 0 failure/error/skip**, exit 0. |
+| İzole PostgreSQL 18 genişletilmiş kayıt/şablon/API/concurrency paketi | **86 test / 1226 assertion; 0 failure/error/skip**, exit 0. |
+| `bundle exec rubocop` | **126 dosya; ihlal yok**, exit 0. |
+| `bundle exec rails zeitwerk:check` — test ortamı | **All is good!**, exit 0. |
+| `bundle exec rails tailwindcss:build` — test ortamı | Başarılı, exit 0. |
+
+PG yalnız loopback `127.0.0.1:55443/signflow_agent_test` üzerinde, mevcut izole test kümesinde çalıştırıldı; production bağlantısı veya verisi kullanılmadı. Yeni migration/gem/environment ihtiyacı yok. Yeni kayıt, 3 başlangıç sürümü, rollback/retry, iki kullanıcı izolasyonu, AI conversation başlangıcı, normal şablon listesi, eski/özel şablonların korunması, kurtarma tekrarları ve eşzamanlı ekleme kapsandı. Windows opsiyonel libvips/Rack uyarıları görüldü; gerçek model/tarayıcı/production doğrulaması yapılmadı.
+
+Ek CI hazırlığı: `bundle exec ruby bin/bundler-audit` **No vulnerabilities found**, exit 0; `bundle exec ruby bin/brakeman --no-pager` **Errors 0 / Security Warnings 0**, exit 0. Windows Brakeman Ractor/fork/forwardable tanılama mesajları vardı; sonuç scanner raporu ve exit koduyla ayrı kontrol edildi. Tarama veya test bypass edilmedi.
+
+Kullanıcı bu gönderim görevi sırasında Render Settings'i yeniden kontrol ederek **“Şimdi kontrol ettim: main / Auto-Deploy Off”** yanıtını verdi. Bu güncel kullanıcı teyididir; eski teyit veya Codex Dashboard erişimi gibi sunulmaz. Koşul sağlandığı için kontrollerden sonra `fix: initialize AI contract templates for new users` mesajıyla yerel commit ve normal main push yetkilidir. Yeni SHA/Actions sonucu yalnız gerçekten oluşturulup sorgulandıktan sonra son yanıtta bildirilir; bu kayıt henüz uzak CI başarısı iddia etmez.
+
+Commit kapsamı yalnız bu iyileştirmenin servis/controller/view/route/test/CI/AGENT/rapor/Challenge dosyalarıdır; `.env`, token/credentials, log/tmp, dump/veritabanı veya production kayıtları alınmaz. Secret kontrolünde değerler yazdırılmaz. İlk prompt ve tarihsel metin korunur. Production'a bağlanma, gerçek Gemini çağrısı, API key okuma, Render deploy, veri silme/sıfırlama yoktur. İnsan/agent süresi veya yeni model maliyeti ölçülmedi. Sonraki yayın için ayrıca backup/restore ve hedef SHA/CI kontrolü, Auto-Deploy Off ve kullanıcı onaylı manuel deploy gerekir; toplu db:seed/backfill çalıştırılmaz.

@@ -14,6 +14,20 @@ class AiContractsController < ApplicationController
     redirect_to ai_contract_path(conversation), status: :see_other
   end
 
+  def prepare_templates
+    count = Templates::DemoSeeder.call(user: current_user)
+    notice = if count.zero?
+      "Başlangıç şablonlarınız zaten hazır. Herhangi bir değişiklik yapılmadı."
+    else
+      "#{count} başlangıç şablonu eklendi. Mevcut şablonlarınız korunuyor."
+    end
+    redirect_to new_ai_contract_path, status: :see_other, notice: notice
+  rescue ActiveRecord::RecordInvalid, ActiveModel::ValidationError, Templates::Renderer::InvalidInput, Templates::DemoSeeder::IncompleteTemplate
+    @templates = Templates::Manage.new(user: current_user).all
+    @error = "Başlangıç şablonları eklenemedi. Mevcut şablonlarınız korunuyor. Lütfen tekrar deneyin veya kendi şablonunuzu oluşturun."
+    render :new, status: :unprocessable_entity
+  end
+
   def show
     load_view
   end

@@ -5,7 +5,12 @@
   <h2 class="mb-3 text-xl font-semibold">Bir şablonla başlayın</h2>
   <p class="mb-6 text-sm leading-7 text-slate-500">AI bilgileri çıkarır; sözleşme metni seçtiğiniz şablondan hazırlanır. Şablon sürümü konuşma boyunca sabit kalır. AI sözleşmenizi imzaya gönderemez.</p>
   <% if @templates.empty? %>
-    <p class="mb-5">Önce kendi sözleşme şablonunuzu oluşturun.</p><%= link_to "Şablonlarım", templates_path, class: "btn btn-primary" %>
+    <div data-empty-templates>
+      <p class="mb-4 font-medium">Bu hesapta kullanılabilir sözleşme şablonu bulunmuyor.</p>
+      <p class="mb-5 text-sm leading-7 text-slate-500">AI sözleşme hazırlamak için size ait bir şablon sürümüne ihtiyaç duyar. Yazılım Geliştirme, Gizlilik ve Danışmanlık başlangıç şablonlarını hesabınıza ekleyebilir veya kendi şablonunuzu oluşturabilirsiniz.</p>
+      <%= button_to "Üç başlangıç şablonunu ekle", prepare_templates_ai_contracts_path, class: "btn btn-primary", form: { data: { turbo: false } } %>
+      <%= link_to "Kendi şablonumu oluştur", new_template_path, class: "btn btn-secondary mt-3" %>
+    </div>
   <% else %>
     <%= form_with url: ai_contracts_path, data: { turbo: false } do |form| %>
       <div class="field-group"><%= label_tag :template_version_id, "Sözleşme şablonu" %><%= select_tag :template_version_id, options_for_select(@templates.map { |template| [ "#{template.current_version.title} · v#{template.current_version.number}", template.current_version_id ] }), required: true %></div>

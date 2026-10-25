@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   end
   root "pages#home"
   resources :ai_contracts, only: %i[new create show] do
+    post :prepare_templates, on: :collection
     post :message, on: :member
     post :draft, on: :member
   end

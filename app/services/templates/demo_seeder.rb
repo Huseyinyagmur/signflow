@@ -1,5 +1,7 @@
 module Templates
   class DemoSeeder
+    class IncompleteTemplate < StandardError; end
+
     EXAMPLES = [
       { key: "software", title: "Yazılım Geliştirme Hizmet Sözleşmesi",
         description: "Yazılım projeleri için beş değişkenli ders demosu.",
@@ -17,7 +19,13 @@ module Templates
         manager = Manage.new(user: user)
         created_count = 0
         EXAMPLES.each do |example|
-          next if user.templates.exists?(seed_key: example.fetch(:key))
+          existing = user.templates.includes(:current_version).find_by(seed_key: example.fetch(:key))
+          if existing
+            # Never overwrite a legacy/edited row or claim an unusable set is ready.
+            raise IncompleteTemplate unless existing.current_version&.template_id == existing.id
+
+            next
+          end
 
           manager.create!(example.except(:key), seed_key: example.fetch(:key))
           created_count += 1
