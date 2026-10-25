@@ -1,5 +1,7 @@
 # SignFlow Agent — Aşama 2 teknik raporu
 
+**Sonraki aşama notu:** Bu dosya Aşama 2 kapanışının tarihsel raporudur. Aşama 3'te credential yönetim ekranı ve temel process kotası eklendi; güncel durum [Aşama 3 raporunda](AGENT_STAGE3_REPORT.md). Gerçek LLM çağrısı hâlâ yapılmadı.
+
 **25.10.2026.** Ruby istemcisi ve deterministik testleri tamamlandı. **Gerçek Anthropic çağrısı yapılmadı; canlı LLM başarısı veya 100 puan koşulunun tamamlandığı iddia edilmiyor.** Ortamda ANTHROPIC_API_KEY tanımlı değildi; özel credential depoları aranmadı ve ücretli çağrı izni alınmadı. Sonraki gerçek deneme için [demo rehberi](AGENT_LLM_DEMO.md).
 
 Başlangıç SHA: `d0e747978b13ec55f5cc9edae2c723c4d4fe910b`, 25.10.2026, `feat: add secure agent draft API with idempotency`. Gerçek yerel Git kaydıdır. Bu çalışma commit/push/deploy yapmadı. Aşama 1'in ilk promptu ve tarihsel kayıtları korunmuştur; [Challenge](../CHALLENGE_LOG.md).

@@ -1,0 +1,10 @@
+<% content_for :title, "Yeni agent anahtarı" %>
+<div class="page-heading"><div><h1>Agent anahtarınız oluşturuldu</h1><p>Bu ekranı paylaşmayın veya projeksiyona yansıtmayın.</p></div></div>
+<section class="panel p-6" data-turbo-temporary>
+  <h2 class="mb-3 text-xl font-semibold">Yalnız bu yanıtta gösterilir</h2>
+  <p class="hint mb-4">Anahtarı güvenli yerel girişte kullanın. Sayfadan ayrıldıktan sonra tekrar göremezsiniz. Kaybederseniz bu erişimi iptal edip yenisini oluşturun.</p>
+  <%= label_tag :agent_token, "Gizli agent anahtarı" %>
+  <%= text_area_tag :agent_token, @token, id: "agent-token", readonly: true, autocomplete: "off", spellcheck: false, rows: 3, class: "mb-5 font-mono break-all" %>
+  <p class="hint mb-5">Geçerlilik: <%= display_time(@credential.expires_at) %>. Bu anahtar imzaya gönderme veya imzalama yetkisi vermez.</p>
+  <%= link_to "Erişimlerime dön", agent_credentials_path, class: "btn btn-primary", data: { turbo: false } %>
+</section>

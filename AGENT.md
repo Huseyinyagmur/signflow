@@ -98,6 +98,14 @@ bundle exec rubocop
 - `tmp/llm-jobs` içindeki özel job kaydı secret içermez ama sentetik payload içerir. Kimlik/binding/key ve payload korunur; timeout sonrası aynı job ile `--resume` kullanılır. Yeni key üretmek/alanları değiştirerek sessiz retry yapmak yok. Resume deterministik API recovery'dir, yeni LLM çağrısı değildir.
 - Normal CI gerçek LLM'e erişmez; testlerde fake provider kullanılır. Kullanım: `bundle exec rails test`; PostgreSQL job'ı yeni handoff testini de kapsar. Canlı billing/usage ve Render kanıtını bu testlerden çıkarmayın.
 
+## SignFlow Agent — Aşama 3 hazırlığı (25.10.2026)
+
+- Credential UI `AgentCredentialsController` ve `Agents::Credentials` ile current_user kapsamında çalışır. Yalnız label/1-7-30 günlük süre alınır; ham token yalnız create POST yanıtındadır, flash/session/URL/DB'ye taşınmaz. Liste hash göstermez. no-store/noindex/Turbo no-cache ve CSRF/origin korunur.
+- API flag kapalıyken yeni credential oluşturulmaz; oturum sahibi mevcut erişimlerini listeleyebilir/iptal edebilir. İptal incident sırasında flag'den bağımsız kalmalı; agent bearer'ı web kimliği değildir.
+- `Agents::RateLimiter`: credential başına ayrı 60 GET/HEAD ve 10 POST / 60 saniye, process-local Mutex + MemoryStore. Replay ve validation başarısızlıkları da sayılır; 429 Retry-After döner. Restart/eviction reset, çok process/instance ortak kota değildir. DB idempotency/iptali kota belleğine taşımayın; auth/iptal kontrolü kotadan önce kalmalıdır.
+- Rehberler: [docs/AGENT_STAGE3_REPORT.md](docs/AGENT_STAGE3_REPORT.md), [docs/REAL_LLM_QUICKSTART.md](docs/REAL_LLM_QUICKSTART.md), [docs/RENDER_AGENT_RELEASE_CHECKLIST.md](docs/RENDER_AGENT_RELEASE_CHECKLIST.md). Gerçek anahtar/LLM/Render API veya production işlemi, ücretli servis, commit/push/deploy bu görevde yoktur. Public doküman model kontrolünü hesap erişimi gibi sunmayın.
+- Test helper memory kotasını integration testleri arasında temizler; bu API'den erişilen bir reset endpoint'i değildir. PG CI job'ı UI/kota/iptal ve concurrency testlerini de kapsar; uzak sonucu çalışmadan başarılı göstermeyin.
+
 ## Genel kapsam sınırları
 
 - Mevcut Rails projesini silmeyin, yeniden üretmeyin veya kullanıcı dosyalarının üzerine topluca yazmayın.

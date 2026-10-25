@@ -37,6 +37,8 @@ Endpoint, kimlik teslimi/iptali, gerçek yerel testler ve sınırlamalar: [Aşam
 
 **Aşama 2 — yerel LLM istemcisi:** `script/signflow_agent.rb`, Anthropic Messages API adaptörü, üç izinli araç, eksik alan diyaloğu, alan onayı ve kalıcı idempotent iş kurtarma içerir. **Gerçek sağlayıcı çağrısı henüz yapılmadı**; model çıkarım kalitesi ve hesap erişimi doğrulanmadı. Anahtar/bütçe izni olmadan çağrı yapılmaz. Testler fake provider ile çalışır; bu sonuçlar canlı LLM kanıtı değildir. [Teknik rapor](docs/AGENT_LLM_STAGE2.md) · [Güvenli canlı demo rehberi](docs/AGENT_LLM_DEMO.md).
 
+**Aşama 3 hazırlığı:** Oturum/CSRF korumalı **Agent erişimi** ekranı (`/agent_credentials`) ile oluşturma, listeleme ve iptal eklendi; token yalnız ilk POST yanıtında gösterilir. API credential başına 60 saniyede 60 okuma/10 POST ile sınırlıdır; process-memory kota restart/eviction'da sıfırlanır, çok instance için ortak sınır değildir. [Gerçek yerel sonuçlar](docs/AGENT_STAGE3_REPORT.md) · [Kısa LLM kurulum rehberi](docs/REAL_LLM_QUICKSTART.md) · [Render yayın kontrol listesi](docs/RENDER_AGENT_RELEASE_CHECKLIST.md). Gerçek LLM/Render denemesi yapılmadı.
+
 ## Araştırma yöntemi ve kanıt sınırı
 
 Araştırma/erişim tarihi **17.10.2026**; kapsam **2026 ABD Fortune 500**. Global 500 ve Europe 500 verileri bu listeye karıştırılmaz. Dış veriler kaynaklarıyla, yerel sayımlar ölçüm etiketiyle, kullanıcı bilgileri beyan etiketiyle, varsayımlar tahmin etiketiyle gösterilir. Erişim tarihi, finansal verinin ölçüm tarihi değildir. Dinamik şirket profilleri sonradan değişebilir. Doğrudan erişilemeyen veya tüm listeyi kapsamayan kanıttan kesin minimum çıkarılmaz; eksikler [teslim kontrol tablosunda](#ödev-teslim-kontrol-tablosu) açık kalır.

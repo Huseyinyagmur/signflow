@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   root "pages#home"
   resource :session, only: %i[new create show destroy]
   resource :registration, only: %i[new create]
+  resources :agent_credentials, only: %i[index create] do
+    post :revoke, on: :member
+  end
   get "dashboard", to: "dashboard#show"
   resources :documents, except: :destroy do
     post :send_for_signature, on: :member

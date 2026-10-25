@@ -6,7 +6,7 @@ Bu rehber **henüz gerçekleştirilmemiş** gerçek LLM demosu içindir. Kod/fak
 
 1. Sentetik bir SignFlow hesabında mevcut bir şablon ve sabit sürüm seçin. Şablon değişkenlerini arayüzden doğrulayın; demo için `alici_adi`, `hizmet`, `ucret` içeren kısa bir şablon yeterlidir. Hizmet başlangıç/bitiş değişkenleri varsa takip cevabına onların tarihlerini de ekleyin. İsim/e-posta gerçek müşteri olmasın.
 2. Yerel Rails sunucusunda `AGENT_API_ENABLED=true` ile Aşama 1 API'sini açın; mevcut oturum/CSRF ayarlarına dokunmayın. Render kullanacaksanız önce ayrı deploy yetkisi/Auto-Deploy/CI/flag kontrolü gerekir; bu çalışma onu yapmadı.
-3. Owner kapsamlı güvenli CLI provisioning ile SignFlow credential'ı hazırlayın. Teslim dosyasını/env'yi/anahtar sayfasını projeksiyona yansıtmayın; NTFS ACL'yi kontrol edin. Credential yönetim ekranı henüz yok.
+3. Web oturumunda **Agent erişimi** (`/agent_credentials`) ekranından size ait credential oluşturun; token yalnız ilk oluşturma yanıtında gösterilir. Ekranı projeksiyona yansıtmayın. Güvenli CLI provisioning operatör alternatifi olarak korunuyor. Güncel kısa adımlar: [gerçek LLM denemesi](REAL_LLM_QUICKSTART.md).
 4. Anthropic hesabında workspace'e bağlı key, seçilen modele erişim, kredi ve bütçe koşullarını kendiniz kontrol edin. Sağlayıcı key'ini sohbete veya terminal komutuna yapıştırmayın; istemcinin maskeli girişini veya güvenli process env kullanın. Bu istemci gerçek sağlayıcı maliyetini doğurabilir.
 5. Aşağıdaki ayarlarda ID'ler örnektir. Kendi **size ait** sabit sürüm ID'lerinizi girin. `.env.example` otomatik yüklenmez.
 

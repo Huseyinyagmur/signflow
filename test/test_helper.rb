@@ -33,5 +33,6 @@ class ActionDispatch::IntegrationTest
   setup do
     SessionsController::RATE_LIMIT_STORE.clear
     RegistrationsController::RATE_LIMIT_STORE.clear
+    Agents::RateLimiter.reset!
   end
 end

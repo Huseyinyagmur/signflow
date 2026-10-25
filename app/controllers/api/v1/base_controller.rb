@@ -5,6 +5,7 @@ module Api
       wrap_parameters false
       before_action :protect_response
       before_action :require_agent_access
+      before_action :enforce_rate_limit
       rescue_from StandardError, with: :unexpected_failure
       rescue_from ActiveRecord::RecordNotFound, with: -> { api_error("not_found", :not_found) }
       rescue_from Agents::CreateDraft::Unauthorized, with: -> { api_error("unauthorized", :unauthorized) }
@@ -38,6 +39,15 @@ module Api
 
       def api_error(code, status)
         render json: { error: code }, status: status
+      end
+
+      def enforce_rate_limit
+        bucket = request.get? || request.head? ? :read : :write
+        allowed, wait = Agents::RateLimiter.consume(credential_id: @credential.id, bucket: bucket)
+        return if allowed
+
+        response.headers["Retry-After"] = wait.to_s
+        api_error("rate_limit_exceeded", :too_many_requests)
       end
 
       def draft_response(document, replayed: nil)

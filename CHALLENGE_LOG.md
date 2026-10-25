@@ -1,6 +1,6 @@
 # SignFlow Agent — Challenge Log
 
-**Başlangıç tarihi:** 25.10.2026. **Durum:** Aşama 1 API yerelde uygulandı ve test edildi; LLM entegrasyonu henüz yok. [Geliştirme planı](docs/AGENT_FIRST_IMPLEMENTATION_PLAN.md), [gerçek Aşama 1 kaydı](#aşama-1--gerçek-geliştirme-ve-kanıt-25102026).
+**Başlangıç tarihi:** 25.10.2026. **Güncel durum:** Güvenli Agent API ve Ruby LLM istemcisi geliştirildi; istemci fake provider ile test edildi. Gerçek LLM çağrısı henüz yapılmadı. [Geliştirme planı](docs/AGENT_FIRST_IMPLEMENTATION_PLAN.md), [gerçek Aşama 1 kaydı](#aşama-1--gerçek-geliştirme-ve-kanıt-25102026). Aşağıdaki eski bölümler tarihsel kayıttır; güncel hazırlık Aşama 3 ekinde yer alır.
 
 ## Başlangıç noktası
 
@@ -226,3 +226,41 @@ Windows libvips opsiyonel DLL ve Rack literal string uyarıları görüldü; tes
 **Karar: kontrollü gerçek sentetik değerlendirmeyle devam.** Kod ve fake testler hazır; gerçek LLM erişimi/kalitesi ve 100 puanlık canlı kanıt henüz açık. İlerlemek için kullanıcı hesabında geçerli workspace key'i, model erişimi ve bütçe izni; ardından gerçek başarı/eksik bilgi/injection denemeleri ve web demosu gerekir. Kullanıcı credential UI'sı/API kotası eksikleri devam ediyor. Render Auto-Deploy/CI/canlı SHA/backup/flag doğrulanmadan push/deploy yok; bu çalışma yeni ücretli altyapı veya gerçek LLM çağrısı yapmadı.
 
 Son kontrol: yalnız bu çalışma için açılan yerel PostgreSQL cluster'ı kapatıldı; kayıt/dosya silinmedi. İlk prompt ve önceki Challenge metni aynen korunuyor; altı development tablosu hash karşılaştırması değişmedi. Son küçük provider wire normalizasyonundan sonra hedefli testler **16 test / 95 assertion, sıfır failure/error/skip** ile geçti. Bu ek test de gerçek modeli çağırmadı.
+
+## Aşama 3 hazırlığı — credential ekranı, kota ve kontrollü yayın (25.10.2026)
+
+Başlangıç yerel SHA: **`7878ea949b75c3bd80f295bd82ca7ed43ee071a5`**, 25.10.2026 09:22:02 +03:00 (`feat: add LLM agent client with safe tool calling`). Bu görevin yeni değişiklikleri commit edilmedi. Üst güncel durum metni düzeltildi: LLM istemcisi geliştirildi ve fake provider ile test edildi; gerçek LLM çağrısı yapılmadı. Önceki tarihsel bölümler ve ilk prompt korunuyor.
+
+### Gerçekte yapılanlar
+
+- Oturum/CSRF/Origin korumalı GET `/agent_credentials`, POST `/agent_credentials`, POST `/agent_credentials/:id/revoke`. Owner kapsamı current_user'dan; süre 1/7/30 gün. Mevcut hash-only AgentCredential modeli kullanıldı, raw token yalnız ilk create POST yanıtında; liste/GET/flash/session/URL saklaması yok. no-store/noindex ve Turbo no-cache korunur.
+- API kapalıyken yeni credential engelli; mevcut credential'ların listesi/iptali açık kalır. Bearer token web kimliği sayılmaz; başkasının iptal/liste erişimi engellenir.
+- Credential başına 60 saniyede 60 GET/HEAD, 10 POST; replay ve doğrulama başarısızlıkları da sayılır. Auth/iptal kontrolü kotadan önce. 429 + Retry-After; Mutex/MemoryStore tek process demo sınırı. Restart/eviction resetlenir, çok instance ortak kota değildir; DB idempotency/iptal değişmez.
+- Dosyalar: `AgentCredentialsController`, `Agents::Credentials`, `Agents::RateLimiter`, iki credential ERB görünümü, API base controller kota callback'i, routes/layout menüsü; yeni UI/kota/thread testleri, test helper ve PG CI job güncellemesi.
+- [Aşama 3 raporu ve tam envanter](docs/AGENT_STAGE3_REPORT.md), [kısa gerçek LLM kullanıcı rehberi](docs/REAL_LLM_QUICKSTART.md), [Render kontrol listesi](docs/RENDER_AGENT_RELEASE_CHECKLIST.md). README/AGENT güncellendi; Aşama 2 raporunun tarihsel kapsamı işaretlendi, demo rehberi yeni ekrana yönlendirildi.
+
+### Gerçek test ve hata kaydı
+
+| Kontrol | Sonuç |
+| --- | --- |
+| Test-first, implementasyon öncesi | 9 test, 75 assertion, 2 failure, 7 error; henüz UI rotaları/kota yoktu. |
+| İlk implementasyon sonrası | 9 test, 153 assertion, 3 failure, 2 error. Testte yanlış action'a per-form CSRF token taşınmıştı; global session token ile sahiplik deneyi düzeltildi. 422 sayfasından form okuma, textarea newline ve nested travel_to testleri düzeltildi. CSRF/origin kapatılmadı. |
+| İlk düzeltilmiş hedefli paket | 9 test, 190 assertion, sıfır failure/error/skip. Sonra HEAD kotası ve iptalin kota önceliği eklendi. |
+| `bundle exec rails test` | **140 test, 1404 assertion, 0 failure, 0 error, 0 skip**. Eski model/şablon/imza/LLM fake testleri dahil. |
+| Hedefli API güvenlik/credential/iptal/kota | **27 test, 357 assertion, 0 failure/error/skip**. |
+| Ayrı PostgreSQL 18 API/UI/kota/handoff/concurrency | **30 test, 387 assertion, 0 failure/error/skip**. |
+| `bundle exec rubocop` | **98 dosya, 0 ihlal**. |
+| `bundle exec rails zeitwerk:check` | All is good! |
+| `bundle exec rails tailwindcss:build` | Başarılı. |
+
+Windows opsiyonel libvips DLL ve Rack literal string uyarıları çıktı. UI gerçek ERB/formları integration stack'inde test edildi; manuel tarayıcı/görsel veya Render kabul testi yapılmadı. Uzak Actions sonucu bilinmiyor. PostgreSQL için yalnız yeni boş loopback `signflow_agent_test` DB'sinde mevcut beş migration çalıştırıldı; Aşama 3 migration eklemedi ve production DB'ye komut gitmedi.
+
+### Anthropic ve yayın kanıt sınırı
+
+25.10.2026 [resmî model sayfası](https://platform.claude.com/docs/en/models/haiku-4-5/overview) `claude-haiku-4-5-20251001` için Active (legacy), $1/1M input ve $5/1M output gösterdi. Bu, kullanıcı hesabında erişim kanıtı değildir. Mevcut x-api-key/2023-06-01 biçiminin desteklendiği [authentication belgesinden](https://platform.claude.com/docs/en/manage-claude/authentication) kontrol edildi; tek workspace'e scoped key gerekir, multi-workspace header akışı yok.
+
+Gerçek Models/Messages çağrısı **0**; gerçek anahtar istenmedi/okunmadı/kaydedilmedi. Kullanım/fatura ölçümü yok; bu çalışmanın ücretli LLM çağrı gideri 0 $, hesap faturası denetlenmedi. Fake response usage gerçek sayı sayılmadı. Dashboard/Auto-Deploy/canlı SHA/backup/plan/migration durumu doğrulanmadı; kontrol listesi boş kutularla kullanıcıya bırakıldı. Commit, push, deploy veya ücretli servis oluşturma yok.
+
+İnsan ve coding agent süresi ölçülmedi: **bilinmiyor**. Gerçek LLM denemesi için kullanıcı kendi hesabında güvenli anahtar girişi, bütçe izni ve sentetik veriyle preflight/deneme yapmalı. Legacy erişimi, gerçek çıktı kalitesi ve canlı imzalama demosu hâlâ bekliyor; 100 puan koşulunun sağlandığı iddia edilmiyor.
+
+Son denetim: yalnız bu iş için açılan `tmp/agent-stage3/postgres-data` cluster'ı kapatıldı, dosyaları/kayıtları silinmedi. İlk prompt SHA-256 aynı; eski tarihsel metin üst durum satırı hariç birebir korunuyor. Development'taki users/documents/templates/template_versions/agent_credentials/agent_requests satır hash'leri değişmedi. Yeni belge bağlantıları ve Markdown code fence'leri kontrol edildi; yerel bozuk bağlantı bulunmadı.

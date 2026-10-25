@@ -1,0 +1,30 @@
+<% content_for :title, "Agent erişimi" %>
+<div class="page-heading"><div><h1>Agent erişimi</h1><p>Agent yalnız taslak oluşturabilir ve kendi oluşturduğu belgeleri sorgulayabilir. İmzaya gönderme yetkisi yoktur.</p></div></div>
+<% if ENV["AGENT_API_ENABLED"] == "true" %>
+  <section class="panel p-6 mb-6">
+    <h2 class="mb-3 text-xl font-semibold">Yeni erişim anahtarı</h2>
+    <p class="hint mb-5">Anahtar yalnız oluşturulduğunda bir kez gösterilir. Paylaşmayın, projeksiyona yansıtmayın ve kaynak koduna yazmayın.</p>
+    <%= render "shared/errors", record: @credential %>
+    <%= form_with scope: :agent_credential, url: agent_credentials_path, data: { turbo: false } do |form| %>
+      <div class="grid gap-5 md:grid-cols-2">
+        <div class="field-group"><%= form.label :label, "Erişim adı" %><%= form.text_field :label, value: @credential.label, required: true, maxlength: 80, autocomplete: "off", placeholder: "Örneğin yerel ders demosu" %></div>
+        <div class="field-group"><%= form.label :lifetime_days, "Geçerlilik süresi" %><%= form.select :lifetime_days, [["1 gün", "1"], ["7 gün", "7"], ["30 gün", "30"]], selected: @lifetime_days %></div>
+      </div>
+      <%= form.submit "Erişim anahtarı oluştur", class: "btn btn-primary" %>
+    <% end %>
+  </section>
+<% else %>
+  <div class="notice">Agent API şu anda kapalı. Mevcut erişimleri görüntüleyebilir ve iptal edebilirsiniz.</div>
+<% end %>
+<section class="panel p-6">
+  <h2 class="mb-4 text-xl font-semibold">Erişimlerim</h2>
+  <% if @credentials.empty? %><p class="text-slate-500">Henüz bir agent erişiminiz yok.</p><% end %>
+  <div class="space-y-4">
+    <% @credentials.each do |credential| %>
+      <article class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-200 p-4">
+        <div class="min-w-0"><h3 class="break-words font-semibold"><%= credential.label %></h3><p class="mt-1 text-sm text-slate-500">Son tarih: <%= display_time(credential.expires_at) %> · <%= credential.revoked_at ? "İptal edildi" : (credential.active? ? "Aktif" : "Süresi doldu") %></p></div>
+        <% unless credential.revoked_at %><%= button_to "Erişimi iptal et", revoke_agent_credential_path(credential), method: :post, class: "btn btn-secondary", form: { data: { turbo: false } } %><% end %>
+      </article>
+    <% end %>
+  </div>
+</section>
